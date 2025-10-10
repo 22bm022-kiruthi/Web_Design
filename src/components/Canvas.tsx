@@ -2,8 +2,7 @@ import React, { useRef, useState, useCallback } from 'react';
 import { useDrop } from 'react-dnd';
 import CanvasWidget from './CanvasWidget';
 import ConnectionLine from './ConnectionLine';
-import ConfigModal from './ConfigModal';
-import { Widget, Connection, Theme } from '../types';
+import { Widget, Connection } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface CanvasProps {
@@ -183,26 +182,52 @@ const Canvas: React.FC<CanvasProps> = ({
           onEndConnection={() => handleEndConnection(widget.id)}
         />
       ))}
-
-      {/* Empty canvas instructions */}
+      {/* Empty canvas welcome with small tool pills */}
       {widgets.length === 0 && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-auto z-20">
           <div className={`text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
             <div className="text-6xl mb-4">🌊</div>
             <h3 className="text-xl font-semibold mb-2">Welcome to DeepSpectrum</h3>
-            <p className="text-lg mb-4">
-              Drag widgets from the sidebar to start building your analysis workflow
-            </p>
+            <p className="text-lg mb-4">Drag widgets from the sidebar to start building your analysis workflow</p>
             <div className="flex flex-wrap justify-center gap-2 text-sm">
-              <span className={`px-3 py-1 rounded-full ${theme === 'dark' ? 'bg-gray-700' : 'bg-blue-100'}`}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!canvasRef.current) return;
+                  const rect = canvasRef.current.getBoundingClientRect();
+                  const position = { x: rect.width / 2 - 40, y: rect.height / 2 - 40 };
+                  onAddWidget('file-upload', position);
+                }}
+                className={`px-3 py-1 rounded-full ${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-blue-100 text-blue-800'}`}
+              >
                 Upload Data
-              </span>
-              <span className={`px-3 py-1 rounded-full ${theme === 'dark' ? 'bg-gray-700' : 'bg-blue-100'}`}>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!canvasRef.current) return;
+                  const rect = canvasRef.current.getBoundingClientRect();
+                  const position = { x: rect.width / 2 - 40, y: rect.height / 2 - 40 };
+                  onAddWidget('blank-remover', position);
+                }}
+                className={`px-3 py-1 rounded-full ${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-blue-100 text-blue-800'}`}
+              >
                 Process
-              </span>
-              <span className={`px-3 py-1 rounded-full ${theme === 'dark' ? 'bg-gray-700' : 'bg-blue-100'}`}>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!canvasRef.current) return;
+                  const rect = canvasRef.current.getBoundingClientRect();
+                  const position = { x: rect.width / 2 - 40, y: rect.height / 2 - 40 };
+                  onAddWidget('line-chart', position);
+                }}
+                className={`px-3 py-1 rounded-full ${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-blue-100 text-blue-800'}`}
+              >
                 Visualize
-              </span>
+              </button>
             </div>
           </div>
         </div>

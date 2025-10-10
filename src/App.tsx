@@ -12,6 +12,9 @@ import LoginPage from './LoginPage';
 
 const App: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(false);
+  React.useEffect(() => {
+    console.log('App: loggedIn =', loggedIn);
+  }, [loggedIn]);
   const [widgets, setWidgets] = useState<Widget[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selectedWidget, setSelectedWidget] = useState<Widget | null>(null);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Waves, Settings, User, Sun, Moon } from 'lucide-react';
+import { Settings, User, Sun, Moon } from 'lucide-react';
 import { Theme } from '../types';
 
 interface HeaderProps {
@@ -16,10 +16,11 @@ const Header: React.FC<HeaderProps> = ({ onToggleTheme, theme }) => {
     }`}>
       <div className="flex items-center justify-between h-full px-6">
         <div className="flex items-center space-x-3">
-          <div className={`p-2 rounded-xl transition-colors duration-300 ${
+          <div className={`p-2 rounded-xl transition-colors duration-300 flex items-center justify-center ${
             theme === 'dark' ? 'bg-blue-600' : 'bg-gradient-to-r from-blue-500 to-cyan-500'
           }`}>
-            <Waves className="h-6 w-6 text-white" />
+            {/* Company logo - place logo.jpg/png in public folder */}
+            <img src="/logo.jpg" alt="DeepSpectrum logo" className="h-8 w-8 object-contain" />
           </div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">

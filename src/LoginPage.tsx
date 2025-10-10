@@ -4,38 +4,93 @@ const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const [error, setError] = useState('');
+
+  const handleLogin = () => {
+    console.log('LoginPage: Login button clicked', { username });
+    setError('');
+    if (!username || !password) {
+      setError('Please enter both username and password');
+      return;
+    }
+
+    // Hard-coded credential check
+    if (username !== '1234' || password !== '9876') {
+      setError('Invalid username or password');
+      setPassword('');
+      return;
+    }
+
+    onLogin();
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-300">
-      <div className="flex flex-col items-center bg-white rounded-lg shadow-lg p-8 w-96">
+    <div className="relative flex flex-col items-center justify-center min-h-screen">
+      {/* Slideshow background (place bg1.jpg/bg2.jpg/bg3.jpg into public/) */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          className="login-slide"
+          style={{ backgroundImage: "url('/bg11.png')" }}
+          aria-hidden="true"
+        />
+        <div
+          className="login-slide"
+          style={{ backgroundImage: "url('/bg12.jpg')", animationDelay: '4s' }}
+          aria-hidden="true"
+        />
+        <div
+          className="login-slide"
+          style={{ backgroundImage: "url('/bg13.jpg')", animationDelay: '8s' }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center bg-white rounded-lg shadow-lg p-8 w-96">
         {/* Company Logo */}
-        <img src="/logo.png" alt="Company Logo" className="h-20 mb-4" />
+        <img src="/logo.jpg" alt="Company Logo" className="h-20 mb-4" />
         {/* Company Name */}
-        <h1 className="text-3xl font-bold mb-2 text-blue-700">Your Company Name</h1>
+  <h1 className="text-3xl font-bold mb-2 text-blue-700">DeepSpectrum Pvt Ltd</h1>
         {/* Welcome Message */}
         <p className="mb-6 text-gray-600">Welcome! Please log in to continue.</p>
-        {/* Username Input */}
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          className="mb-4 px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        {/* Password Input */}
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          className="mb-6 px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        {/* Login Button */}
-        <button
-          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 w-full font-semibold"
-          onClick={onLogin}
+        {/* Form */}
+        <form
+          className="w-full"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
         >
-          Log In
-        </button>
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            className="mb-4 px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="mb-2 px-4 py-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+
+          {error && <div className="text-sm text-red-600 mb-3">{error}</div>}
+
+          <button
+            type="submit"
+            disabled={!username || !password}
+            className={`w-full px-6 py-2 rounded font-semibold text-white ${
+              !username || !password
+                ? 'bg-blue-300 cursor-not-allowed'
+                : 'bg-blue-500 hover:bg-blue-600'
+            }`}
+          >
+            Log In
+          </button>
+        </form>
       </div>
     </div>
   );

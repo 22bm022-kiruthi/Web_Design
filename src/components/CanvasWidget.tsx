@@ -326,54 +326,60 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
         onMouseLeave={() => setShowControls(false)}
       >
         <div
-          className={`relative w-40 h-40 rounded-full transition-all duration-300 group border-2 flex flex-col items-center justify-center ${
+          className={`relative w-32 h-32 rounded-full transition-all duration-300 group border-2 flex flex-col items-center justify-center ${
             theme === 'dark'
               ? 'bg-gradient-to-br from-gray-700 to-gray-800 border-gray-600 hover:border-blue-400'
               : 'bg-gradient-to-br from-white to-blue-50 border-blue-200 hover:border-blue-400 shadow-lg hover:shadow-xl'
           }`}
         >
+          {/* Controls inside the circle: drag (left), settings (center), delete (right) */}
           <div
-            ref={drag}
-            className={`absolute top-2 left-1/2 -translate-x-1/2 w-8 h-8 flex items-center justify-center cursor-move z-30 rounded-full border ${
-              theme === 'dark'
-                ? 'bg-gray-700 border-gray-600'
-                : 'bg-blue-100 border-blue-200'
+            className={`absolute top-2 left-1/2 -translate-x-1/2 z-30 transition-opacity duration-200 ${
+              showControls ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <GripVertical className="h-4 w-4 opacity-60" />
-          </div>
+            <div className="flex items-center gap-2 w-24 justify-between">
+              {/* Drag */}
+              <button
+                ref={drag}
+                title="Drag"
+                className={`w-7 h-7 rounded-full flex items-center justify-center cursor-move transition-all duration-150 ${
+                  theme === 'dark' ? 'bg-gray-700 border border-gray-600' : 'bg-blue-100 border border-blue-200'
+                }`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <GripVertical className="h-3 w-3 opacity-70" />
+              </button>
 
-          {showControls && (
-            <div className="absolute top-1 right-1 flex space-x-1 z-40">
+              {/* Settings */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onOpenConfig();
                 }}
-                className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-                  theme === 'dark'
-                    ? 'bg-gray-600 hover:bg-blue-600 text-gray-300 hover:text-white'
-                    : 'bg-blue-500 hover:bg-blue-600 text-white shadow-sm'
+                title="Settings"
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  theme === 'dark' ? 'bg-gray-600 text-gray-300' : 'bg-white text-gray-700 shadow-sm'
                 }`}
               >
                 <Settings className="h-3 w-3" />
               </button>
 
+              {/* Delete */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onDelete();
                 }}
-                className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-                  theme === 'dark'
-                    ? 'bg-gray-600 hover:bg-red-600 text-gray-300 hover:text-white'
-                    : 'bg-red-500 hover:bg-red-600 text-white shadow-sm'
+                title="Delete"
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  theme === 'dark' ? 'bg-gray-600 text-gray-300' : 'bg-red-500 text-white shadow-sm'
                 }`}
               >
                 <Trash2 className="h-3 w-3" />
               </button>
             </div>
-          )}
+          </div>
 
           <div className="flex-1 w-full relative flex items-center justify-center">
             {renderWidgetContent()}
@@ -383,30 +389,34 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
           <div className="absolute inset-0 pointer-events-none">
             {/* Input */}
             <button
-              className={`absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 transition-all duration-200 pointer-events-auto ${
+              className={`absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 shadow-sm transition-all duration-200 pointer-events-auto ${
                 isConnecting
                   ? theme === 'dark'
-                    ? 'bg-green-500 border-green-400 opacity-100 scale-110'
-                    : 'bg-green-500 border-green-400 opacity-100 scale-110'
-                  : 'bg-transparent border-gray-400 opacity-0 hover:opacity-100'
+                    ? 'bg-pink-500 border-pink-300 opacity-100 scale-125'
+                    : 'bg-pink-500 border-pink-300 opacity-100 scale-125'
+                  : theme === 'dark'
+                  ? 'bg-transparent border-pink-400 opacity-80 hover:opacity-100 hover:scale-110'
+                  : 'bg-transparent border-pink-300 opacity-80 hover:opacity-100 hover:scale-110'
               }`}
               onClick={(e) => {
                 e.stopPropagation();
                 handleEndConnection();
               }}
+              aria-label="input-connector"
             />
 
             {/* Output */}
             <button
-              className={`absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-4 h-4 rounded-full border-2 transition-all duration-200 pointer-events-auto ${
+              className={`absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full border-2 shadow-sm transition-all duration-200 pointer-events-auto ${
                 theme === 'dark'
-                  ? 'bg-blue-500 border-blue-400 opacity-0 hover:opacity-100 hover:scale-110'
-                  : 'bg-blue-500 border-blue-400 opacity-0 hover:opacity-100 hover:scale-110'
+                  ? 'bg-gradient-to-br from-cyan-500 to-blue-500 border-transparent opacity-0 hover:opacity-100 hover:scale-110'
+                  : 'bg-gradient-to-br from-cyan-400 to-blue-500 border-transparent opacity-0 hover:opacity-100 hover:scale-110'
               } ${showControls ? 'opacity-100' : ''}`}
               onClick={(e) => {
                 e.stopPropagation();
                 handleStartConnection();
               }}
+              aria-label="output-connector"
             />
           </div>
         </div>

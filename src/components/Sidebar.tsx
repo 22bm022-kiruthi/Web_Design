@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
-import { Upload, BarChart3, ScatterChart as Scatter3D, Box, Calculator, Filter, Database, LineChart } from 'lucide-react';
+import { Upload, BarChart3, ScatterChart as Scatter3D, Box, Calculator, Filter, Database, LineChart, Search } from 'lucide-react';
 import { WidgetType } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -116,6 +116,34 @@ const DraggableWidget: React.FC<DraggableWidgetProps> = ({ widgetType }) => {
   );
 };
 
+// Small inline list item for nested lists
+const SmallWidgetItem: React.FC<{ widgetType: WidgetType }> = ({ widgetType }) => {
+  const { theme } = useTheme();
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'widget',
+    item: { type: widgetType.id },
+    collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
+  }));
+
+  const IconComponent = iconMap[widgetType.icon];
+
+  return (
+    <li
+      ref={drag as any}
+      className={`flex items-center gap-3 px-2 py-1 rounded hover:bg-blue-50 transition ${
+        isDragging ? 'opacity-50' : ''
+      }`}
+      role="option"
+      aria-label={widgetType.name}
+    >
+      <div className={`w-8 h-8 rounded flex items-center justify-center ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+        <IconComponent className={`h-5 w-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+      </div>
+      <span className={`text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{widgetType.name}</span>
+    </li>
+  );
+};
+
 interface SidebarProps {
   onAddWidget: (type: string, position: { x: number; y: number }) => void;
 }
@@ -128,6 +156,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
   const [showInputOpen, setShowInputOpen] = useState<boolean>(false);
   const [showProcessingOpen, setShowProcessingOpen] = useState<boolean>(false);
   const [showVisualizationOpen, setShowVisualizationOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>('');
 
   const categories = {
     input: widgetTypes.filter(w => w.category === 'input'),
@@ -141,21 +170,47 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
 
   return (
     <aside className={`w-64 border-r transition-colors duration-300 ${
-      theme === 'dark'
-        ? 'bg-white border-blue-100' // force white for both themes
-        : 'bg-white border-blue-100'
+      theme === 'dark' ? 'bg-white border-blue-100' : 'bg-white border-blue-100'
     }`}>
       <div className="p-6">
-        <h2 className="text-lg font-semibold mb-6 text-gray-800">
-          Widget Toolbox
-        </h2>
-        {/* Quick category boxes (stacked vertically) */}
-        <div className="flex flex-col gap-3 mb-4">
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">Widget Toolbox</h2>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-3 text-gray-400" />
+          <input
+            id="widget-search"
+            type="search"
+            placeholder="Search Widget"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-8 py-2 rounded border bg-white text-sm focus:outline-none"
+            aria-label="Search Widget"
+          />
+          {search && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => {
+                setSearch('');
+                // refocus the input after clearing
+                const el = document.getElementById('widget-search') as HTMLInputElement | null;
+                el?.focus();
+              }}
+              className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Category list (clickable items with icon + count) */}
+        <div className="flex flex-col gap-2 mb-4">
+          {/* Data Input button + its inline expansion rendered directly below */}
           <div>
             <button
               type="button"
-              aria-label="Open Data Input section"
-              onClick={() => {
+              onClick={() =>
                 setShowInputOpen((prev) => {
                   const next = !prev;
                   if (next) {
@@ -163,42 +218,38 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
                     setShowVisualizationOpen(false);
                   }
                   return next;
-                });
-              }}
-              className={`w-full p-3 rounded-lg transition-colors duration-200 text-left border ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'}`}
+                })
+              }
+              aria-expanded={showInputOpen}
+              className={`w-full flex items-center gap-3 p-2 rounded hover:bg-blue-50 transition text-left ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+              aria-label="Toggle Data Input"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-blue-100 text-blue-700">📤</div>
-                <div>
-                  <div className="text-sm font-medium">Data Input</div>
-                  <div className="text-xs text-gray-500">{categories.input.length} widgets</div>
-                </div>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-100 text-blue-700">📤</div>
+              <div className="flex-1">
+                <div className="text-sm font-medium">Data Input</div>
+                <div className="text-xs text-gray-500">{categories.input.length} widgets</div>
               </div>
+              <div className="text-sm text-gray-500">{showInputOpen ? '−' : '+'}</div>
             </button>
 
             {showInputOpen && (
-              <div className="mt-3">
-                <div className="flex flex-col gap-3">
-                  {categories.input.map((widget) => (
-                    <div
-                      key={widget.id}
-                      draggable
-                      onDragStart={handleDragStart(widget.id)}
-                      className="cursor-move p-2 rounded bg-white shadow hover:bg-blue-50 transition flex items-center gap-3"
-                    >
-                      <DraggableWidget widgetType={widget} />
-                    </div>
-                  ))}
-                </div>
+              <div className="mb-2 pl-4 border-l border-gray-100 dark:border-gray-800">
+                <ul className="list-none p-0 m-0">
+                  {categories.input
+                    .filter((w) => w.name.toLowerCase().includes(search.toLowerCase()))
+                    .map((widget) => (
+                      <SmallWidgetItem key={widget.id} widgetType={widget} />
+                    ))}
+                </ul>
               </div>
             )}
           </div>
 
+          {/* Processing button + its inline expansion rendered directly below */}
           <div>
             <button
               type="button"
-              aria-label="Open Processing section"
-              onClick={() => {
+              onClick={() =>
                 setShowProcessingOpen((prev) => {
                   const next = !prev;
                   if (next) {
@@ -206,42 +257,38 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
                     setShowVisualizationOpen(false);
                   }
                   return next;
-                });
-              }}
-              className={`w-full p-3 rounded-lg transition-colors duration-200 text-left border ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'}`}
+                })
+              }
+              aria-expanded={showProcessingOpen}
+              className={`w-full flex items-center gap-3 p-2 rounded hover:bg-blue-50 transition text-left ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+              aria-label="Toggle Processing"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-pink-100 text-pink-700">🧹</div>
-                <div>
-                  <div className="text-sm font-medium">Processing</div>
-                  <div className="text-xs text-gray-500">{categories.processing.length} widgets</div>
-                </div>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-pink-100 text-pink-700">🧹</div>
+              <div className="flex-1">
+                <div className="text-sm font-medium">Processing</div>
+                <div className="text-xs text-gray-500">{categories.processing.length} widgets</div>
               </div>
+              <div className="text-sm text-gray-500">{showProcessingOpen ? '−' : '+'}</div>
             </button>
 
             {showProcessingOpen && (
-              <div className="mt-3">
-                <div className="flex flex-col gap-3">
-                  {categories.processing.map((widget) => (
-                    <div
-                      key={widget.id}
-                      draggable
-                      onDragStart={handleDragStart(widget.id)}
-                      className="cursor-move p-2 rounded bg-white shadow hover:bg-blue-50 transition flex items-center gap-3"
-                    >
-                      <DraggableWidget widgetType={widget} />
-                    </div>
-                  ))}
-                </div>
+              <div className="mb-2 pl-4 border-l border-gray-100 dark:border-gray-800">
+                <ul className="list-none p-0 m-0">
+                  {categories.processing
+                    .filter((w) => w.name.toLowerCase().includes(search.toLowerCase()))
+                    .map((widget) => (
+                      <SmallWidgetItem key={widget.id} widgetType={widget} />
+                    ))}
+                </ul>
               </div>
             )}
           </div>
 
+          {/* Visualization button + its inline expansion rendered directly below */}
           <div>
             <button
               type="button"
-              aria-label="Open Visualization section"
-              onClick={() => {
+              onClick={() =>
                 setShowVisualizationOpen((prev) => {
                   const next = !prev;
                   if (next) {
@@ -249,38 +296,33 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
                     setShowProcessingOpen(false);
                   }
                   return next;
-                });
-              }}
-              className={`w-full p-3 rounded-lg transition-colors duration-200 text-left border ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'}`}
+                })
+              }
+              aria-expanded={showVisualizationOpen}
+              className={`w-full flex items-center gap-3 p-2 rounded hover:bg-blue-50 transition text-left ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+              aria-label="Toggle Visualization"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-green-100 text-green-700">📈</div>
-                <div>
-                  <div className="text-sm font-medium">Visualization</div>
-                  <div className="text-xs text-gray-500">{categories.visualization.length} widgets</div>
-                </div>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-green-100 text-green-700">📈</div>
+              <div className="flex-1">
+                <div className="text-sm font-medium">Visualization</div>
+                <div className="text-xs text-gray-500">{categories.visualization.length} widgets</div>
               </div>
+              <div className="text-sm text-gray-500">{showVisualizationOpen ? '−' : '+'}</div>
             </button>
 
             {showVisualizationOpen && (
-              <div className="mt-3">
-                <div className="flex flex-col gap-3">
-                  {categories.visualization.map((widget) => (
-                    <div
-                      key={widget.id}
-                      draggable
-                      onDragStart={handleDragStart(widget.id)}
-                      className="cursor-move p-2 rounded bg-white shadow hover:bg-blue-50 transition flex items-center gap-3"
-                    >
-                      <DraggableWidget widgetType={widget} />
-                    </div>
-                  ))}
-                </div>
+              <div className="mb-2 pl-4 border-l border-gray-100 dark:border-gray-800">
+                <ul className="list-none p-0 m-0">
+                  {categories.visualization
+                    .filter((w) => w.name.toLowerCase().includes(search.toLowerCase()))
+                    .map((widget) => (
+                      <SmallWidgetItem key={widget.id} widgetType={widget} />
+                    ))}
+                </ul>
               </div>
             )}
           </div>
         </div>
-        {/* The lower grid sections have been replaced by inline expansions under the top buttons. */}
       </div>
     </aside>
   );

@@ -7,6 +7,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Canvas from './components/Canvas';
 import ConfigModal from './components/ConfigModal';
+import TopMenuBar from './components/TopMenuBar';
 import { Widget, Connection, Theme } from './types';
 import LoginPage from './LoginPage';
 
@@ -227,6 +228,7 @@ const App: React.FC = () => {
         <ErrorBoundary>
           <div className="flex flex-col h-screen">
             <Header onToggleTheme={() => {}} theme={theme} />
+            <TopMenuBar />
             <div className="flex flex-1">
               <Sidebar onAddWidget={onAddWidget} />
               <Canvas

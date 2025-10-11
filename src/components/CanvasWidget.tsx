@@ -40,6 +40,7 @@ interface CanvasWidgetProps {
   onUpdatePosition: (position: { x: number; y: number }) => void;
   onDelete: () => void;
   onOpenConfig: () => void;
+  onUpdateWidget?: (updates: Partial<Widget>) => void;
   onStartConnection: () => void;
   onEndConnection: () => void;
   onCreateConnection?: (fromId: string, toId: string) => void;
@@ -59,6 +60,7 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
   onEndConnection,
   uploadStatus = null,
   onCreateConnection,
+  onUpdateWidget,
 }) => {
   const { theme } = useTheme();
   const [showControls, setShowControls] = useState(false);
@@ -109,6 +111,9 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
     setConnectingTarget(null);
     onEndConnection();
   };
+
+  // Use onUpdatePosition in a no-op to avoid unused variable lint errors when not used elsewhere
+  void onUpdatePosition;
 
   // Prepare mean/average modal data
   let selectedData: Record<string, any>[] = [];
@@ -292,6 +297,51 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
             onClick={() => setShowBarChartModal(true)}
           >
             Show Bar Chart
+          </button>
+        </div>
+      );
+    }
+    if (widget.type === 'noise-filter') {
+      const runNoiseFilter = () => {
+        const tableData: Record<string, any>[] = widget.data?.tableData || widget.data?.parsedData || [];
+        if (!tableData || tableData.length === 0) return;
+
+        // Simple moving average smoothing for numeric columns (window=3)
+        const columns = Object.keys(tableData[0]);
+        const numericCols = columns.filter((c) => tableData.some((r) => !isNaN(Number(r[c]))));
+
+        const smoothed = tableData.map((row, i) => {
+          const newRow: Record<string, any> = { ...row };
+          numericCols.forEach((col) => {
+            const vals: number[] = [];
+            for (let k = i - 1; k <= i + 1; k++) {
+              if (k >= 0 && k < tableData.length) {
+                const v = Number(tableData[k][col]);
+                if (!isNaN(v)) vals.push(v);
+              }
+            }
+            newRow[col] = vals.length ? Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(4)) : row[col];
+          });
+          return newRow;
+        });
+
+        // Write processed data back to widget via callback if available
+        if (onUpdateWidget) {
+          onUpdateWidget({ data: { ...(widget.data || {}), tableDataProcessed: smoothed } });
+        }
+      };
+
+      return (
+        <div className="flex flex-col items-center w-full">
+          <p className="text-xs mb-2">Noise Filter: moving-average (window=3)</p>
+          <button
+            className="mt-2 px-3 py-1 rounded bg-indigo-500 text-white hover:bg-indigo-600 text-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              runNoiseFilter();
+            }}
+          >
+            Run Noise Filter
           </button>
         </div>
       );

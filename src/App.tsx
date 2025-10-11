@@ -165,6 +165,36 @@ const App: React.FC = () => {
         );
       }
 
+      // File Upload -> Noise Filter
+      if (fromWidget.type === 'file-upload' && toWidget.type === 'noise-filter') {
+        const tableData = fromWidget.data?.parsedData || [];
+        setWidgets((prev: Widget[]) =>
+          prev.map((widget: Widget) =>
+            widget.id === toId
+              ? {
+                  ...widget,
+                  data: { ...(widget.data || {}), tableData },
+                }
+              : widget
+          )
+        );
+      }
+
+      // Noise Filter -> Data Table / Visualizations: prefer processed tableDataProcessed
+      if (fromWidget.type === 'noise-filter' && (toWidget.type === 'data-table' || toWidget.type === 'line-chart' || toWidget.type === 'scatter-plot' || toWidget.type === 'box-plot' || toWidget.type === 'bar-chart')) {
+        const processed = fromWidget.data?.tableDataProcessed || fromWidget.data?.tableData || [];
+        setWidgets((prev: Widget[]) =>
+          prev.map((widget: Widget) =>
+            widget.id === toId
+              ? {
+                  ...widget,
+                  data: { ...(widget.data || {}), tableData: processed },
+                }
+              : widget
+          )
+        );
+      }
+
       // File Upload -> Scatter Plot
       if (fromWidget.type === 'file-upload' && toWidget.type === 'scatter-plot') {
         setWidgets((prev: Widget[]) =>

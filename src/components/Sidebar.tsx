@@ -55,6 +55,13 @@ const widgetTypes: WidgetType[] = [
     category: 'processing'
   },
   {
+    id: 'noise-filter',
+    name: 'Noise Filter',
+    icon: 'Filter',
+    description: 'Smoothing / denoising',
+    category: 'processing'
+  },
+  {
     id: 'blank-remover',
     name: 'Blank Remover',
     icon: 'Filter',

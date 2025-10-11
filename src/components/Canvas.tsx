@@ -180,6 +180,7 @@ const Canvas: React.FC<CanvasProps> = ({
           onOpenConfig={() => onOpenConfig(widget)} 
           onStartConnection={() => handleStartConnection(widget.id)}
           onEndConnection={() => handleEndConnection(widget.id)}
+          onUpdateWidget={(updates: any) => onUpdateWidget(widget.id, updates)}
         />
       ))}
       {/* Empty canvas welcome with small tool pills */}

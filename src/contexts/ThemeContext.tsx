@@ -3,18 +3,19 @@ import { Theme } from '../types';
 
 interface ThemeContextType {
   theme: Theme;
-  // optional toggle if you add theme switching later
   toggleTheme?: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider: React.FC<{ theme: Theme; children: React.ReactNode }> = ({ theme, children }) => {
-  const toggleTheme = () => {
-    /* noop - implement if you add runtime toggle */
-  };
-
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
+// ThemeProvider can accept an externally-managed toggleTheme (from App)
+export const ThemeProvider: React.FC<{
+  theme: Theme;
+  toggleTheme?: () => void;
+  children: React.ReactNode;
+}> = ({ theme, toggleTheme, children }) => {
+  const toggle = toggleTheme ?? (() => {});
+  return <ThemeContext.Provider value={{ theme, toggleTheme: toggle }}>{children}</ThemeContext.Provider>;
 };
 
 export function useTheme(): ThemeContextType {

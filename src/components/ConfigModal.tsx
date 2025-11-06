@@ -34,9 +34,16 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, widget, onClose, onUp
         method: 'POST',
         body: formData,
       });
-      if (!response.ok) throw new Error('Upload failed');
-
-      const result = await response.json();
+      const text = await response.text();
+      if (!response.ok) {
+        throw new Error(text || `Upload failed (status ${response.status})`);
+      }
+      let result: any = {};
+      try {
+        result = text ? JSON.parse(text) : {};
+      } catch (e) {
+        throw new Error('Upload succeeded but returned invalid JSON: ' + text);
+      }
 
       onUpdate(widget.id, {
         data: {
@@ -61,57 +68,43 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, widget, onClose, onUp
 
   const renderWidgetConfig = () => {
     switch (widget.type) {
-      case 'file-upload':
+      
+      case 'supabase':
         return (
           <div className="space-y-4">
-            <label
-              className={`block text-sm font-medium mb-2 ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-              }`}
-            >
-              Upload File
+            <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+              Table Name
             </label>
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-200 ${
-                theme === 'dark'
-                  ? 'border-gray-600 hover:border-blue-400 bg-gray-800 hover:bg-gray-700'
-                  : 'border-gray-300 hover:border-blue-400 bg-gray-50 hover:bg-blue-50'
-              }`}
-            >
-              <Upload
-                className={`h-8 w-8 mx-auto mb-2 ${
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                }`}
-              />
-              <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                {widget.data && widget.data.filename
-                  ? widget.data.filename
-                  : 'Click to upload CSV/XLS file'}
-              </p>
-              {uploading && (
-                <p className="text-sm mt-1 text-blue-500">Uploading...</p>
-              )}
-              {uploadError && (
-                <p className="text-sm mt-1 text-red-500">{uploadError}</p>
-              )}
-              {widget.data && widget.data.filename && !uploading && !uploadError && (
-                <p
-                  className={`text-sm mt-1 ${
-                    theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                  }`}
-                >
-                  File uploaded successfully
-                </p>
-              )}
-            </div>
             <input
-              ref={fileInputRef}
-              type="file"
-              accept=".csv,.xlsx,.xls"
-              onChange={handleFileUpload}
-              className="hidden"
+              type="text"
+              placeholder="raman_data"
+              defaultValue={(widget.data && widget.data.supabaseTable) || 'raman_data'}
+              onChange={(e) => onUpdate(widget.id, { data: { ...(widget.data || {}), supabaseTable: e.target.value } })}
+              className="w-full px-3 py-2 border rounded"
             />
+            <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+              Supabase Credentials (optional)
+            </label>
+            <div className="space-y-2">
+              <input
+                type="text"
+                placeholder="SUPABASE_URL"
+                defaultValue={(widget.data && widget.data.supabaseUrl) || import.meta.env.VITE_SUPABASE_URL || ''}
+                onChange={(e) => onUpdate(widget.id, { data: { ...(widget.data || {}), supabaseUrl: e.target.value } })}
+                className="w-full px-3 py-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="SUPABASE_KEY"
+                defaultValue={(widget.data && widget.data.supabaseKey) || import.meta.env.VITE_SUPABASE_KEY || ''}
+                onChange={(e) => onUpdate(widget.id, { data: { ...(widget.data || {}), supabaseKey: e.target.value } })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+
+            <div className="text-sm text-gray-500">
+              You can leave these blank to use app-level Vite env values or the built-in demo project values. Credentials will be stored in the widget data only for this workspace.
+            </div>
           </div>
         );
       default:
@@ -143,16 +136,10 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, widget, onClose, onUp
           <div className="px-6 py-4">{renderWidgetConfig()}</div>
 
           <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3 bg-gray-50">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-gray-800"
-            >
+            <button onClick={onClose} className="px-4 py-2 rounded-lg btn-outline">
               Cancel
             </button>
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
-            >
+            <button onClick={handleSave} className="px-4 py-2 rounded-lg btn-primary">
               <Save className="inline h-4 w-4 mr-1" />
               Save
             </button>

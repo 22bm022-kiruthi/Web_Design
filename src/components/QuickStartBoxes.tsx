@@ -13,16 +13,18 @@ const QuickStartBoxes: React.FC<QuickStartBoxesProps> = ({ onQuickAdd }) => {
       </div>
 
       <div className="flex flex-wrap justify-center gap-6">
-        <button
-          type="button"
-          onClick={() => onQuickAdd('file-upload')}
-          className="w-56 h-36 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex flex-col items-center justify-center text-center transform hover:scale-105 transition"
-          aria-label="Add Data Input widget"
-        >
-          <div className="text-4xl mb-2">📤</div>
-          <div className="font-medium">Data Input</div>
-          <div className="text-xs text-gray-400 mt-1">Upload CSV / XLSX files</div>
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => onQuickAdd('supabase')}
+            className="w-56 h-36 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex flex-col items-center justify-center text-center transform hover:scale-105 transition"
+            aria-label="Add Supabase Source widget"
+          >
+            <div className="text-4xl mb-2">🗄️</div>
+            <div className="font-medium">Supabase</div>
+            <div className="text-xs text-gray-400 mt-1">Fetch rows from Supabase</div>
+          </button>
+        </div>
 
         <button
           type="button"

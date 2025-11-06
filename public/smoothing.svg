@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" class="icon" aria-hidden="true">
+  <rect rx="12" ry="12" width="64" height="64" fill="#ffffff" />
+  <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M12 44 C20 34, 28 36, 36 30 C44 24, 52 30, 52 30" />
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+{
+  "filename": "test_sample_upload.csv",
+  "parsedData": [
+    {
+      "col1": "10",
+      "col2": "20"
+    },
+    {
+      "col1": "30",
+      "col2": "40"
+    }
+  ],
+  "supabase": null,
+  "storage": null
+}

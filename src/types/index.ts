@@ -10,6 +10,7 @@ export interface Connection {
   id: string;
   fromId: string;
   toId: string;
+  createdAt?: number;
 }
 
 export type Theme = 'light' | 'dark';

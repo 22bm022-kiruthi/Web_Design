@@ -6,6 +6,7 @@ interface ConnectionLineProps {
   to: { x: number; y: number };
   isPreview?: boolean;
   theme: Theme;
+  createdAt?: number;
 }
 
 const ConnectionLine: React.FC<ConnectionLineProps> = ({
@@ -13,88 +14,61 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
   to,
   isPreview = false,
   theme,
+  createdAt,
 }) => {
-  // Calculate control points for a smooth cubic bezier curve
+  // Calculate control points for a smooth cubic bezier curve (Orange-style)
   const dx = to.x - from.x;
-  const controlOffset = Math.abs(dx) * 0.5;
+  const controlOffset = Math.abs(dx) * 0.6; // Smoother curves like Orange
 
   const controlPoint1 = { x: from.x + controlOffset, y: from.y };
   const controlPoint2 = { x: to.x - controlOffset, y: to.y };
 
   const pathData = `M ${from.x} ${from.y} C ${controlPoint1.x} ${controlPoint1.y}, ${controlPoint2.x} ${controlPoint2.y}, ${to.x} ${to.y}`;
 
-  // Define arrow marker ids dynamically based on theme and isPreview
-  const markerId = `arrowhead-${isPreview ? 'preview' : 'normal'}-${theme}`;
+  // Orange Data Mining style colors - gray/neutral connections
+  const lineColor = theme === 'dark' ? '#6B7280' : '#9CA3AF'; // Gray color
+  const previewColor = theme === 'dark' ? '#60A5FA' : '#3B82F6'; // Blue for preview
+  const markerId = `arrowhead-${isPreview ? 'preview' : 'normal'}-orange`;
 
   return (
     <>
-      {/* Shadow/Background line */}
+      {/* Main dashed line - Orange Data Mining style */}
       <path
         d={pathData}
         fill="none"
-        stroke={theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.1)'}
-        strokeWidth={isPreview ? 4 : 6}
-        className="drop-shadow-sm"
-      />
-
-      {/* Main line */}
-      <path
-        d={pathData}
-        fill="none"
-        stroke={
-          isPreview
-            ? theme === 'dark'
-              ? '#60a5fa'
-              : '#3b82f6'
-            : theme === 'dark'
-            ? '#06b6d4'
-            : '#0891b2'
-        }
-        strokeWidth={isPreview ? 2 : 3}
-        strokeDasharray={isPreview ? '8,4' : 'none'}
+        stroke={isPreview ? previewColor : lineColor}
+        strokeWidth={isPreview ? 2.5 : 2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray="8,6"
         className={`transition-all duration-300 ${
           isPreview ? 'animate-pulse' : ''
+        } ${
+          createdAt && Date.now() - createdAt < 1500 ? 'connection-pop' : ''
         }`}
+        opacity={isPreview ? 0.8 : 0.6}
       />
 
-      {/* Animated data flow circles (only when not preview) */}
+      {/* Small animated dot moving along connection (optional) */}
       {!isPreview && (
-        <>
-          <circle r={4} fill={theme === 'dark' ? '#06b6d4' : '#0891b2'} className="opacity-80">
-            <animateMotion dur="2s" repeatCount="indefinite" path={pathData} />
-          </circle>
-
-          <circle
-            r={2}
-            fill={theme === 'dark' ? '#67e8f9' : '#22d3ee'}
-            className="opacity-60"
-          >
-            <animateMotion dur="2s" repeatCount="indefinite" path={pathData} begin="0.5s" />
-          </circle>
-        </>
+        <circle r={3} fill={lineColor} className="opacity-50">
+          <animateMotion dur="3s" repeatCount="indefinite" path={pathData} />
+        </circle>
       )}
 
-      {/* Define arrowhead marker */}
+      {/* Define arrowhead marker - Orange style */}
       <defs>
         <marker
           id={markerId}
-          markerWidth={10}
-          markerHeight={7}
-          refX={9}
-          refY={3.5}
+          markerWidth={8}
+          markerHeight={6}
+          refX={7}
+          refY={3}
           orient="auto"
         >
           <polygon
-            points="0 0, 10 3.5, 0 7"
-            fill={
-              isPreview
-                ? theme === 'dark'
-                  ? '#60a5fa'
-                  : '#3b82f6'
-                : theme === 'dark'
-                ? '#06b6d4'
-                : '#0891b2'
-            }
+            points="0 0, 8 3, 0 6"
+            fill={isPreview ? previewColor : lineColor}
           />
         </marker>
       </defs>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
-import { Upload, BarChart3, ScatterChart as Scatter3D, Box, Calculator, Filter, Database, LineChart, Search } from 'lucide-react';
+import { Upload, BarChart3, ScatterChart as Scatter3D, Box, Calculator, Filter, Database, LineChart, Search, Code } from 'lucide-react';
 import { WidgetType } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
+// removed unused extra lucide-react imports
 
 const widgetTypes: WidgetType[] = [
   {
@@ -10,6 +11,13 @@ const widgetTypes: WidgetType[] = [
     name: 'File Upload',
     icon: 'Upload',
     description: 'Upload CSV/XLS files',
+    category: 'input'
+  },
+  {
+    id: 'supabase',
+    name: 'Supabase Source',
+    icon: 'Database',
+    description: 'Fetch rows from Supabase (test_raman)',
     category: 'input'
   },
   {
@@ -62,10 +70,52 @@ const widgetTypes: WidgetType[] = [
     category: 'processing'
   },
   {
+    id: 'baseline-correction',
+    name: 'Baseline Correction',
+    icon: 'Filter',
+    description: 'Subtract baseline/minimum per column',
+    category: 'processing'
+  },
+  {
+    id: 'smoothing',
+    name: 'Smoothing',
+    icon: 'Filter',
+    description: 'Gaussian smoothing for numeric columns',
+    category: 'processing'
+  },
+  {
+    id: 'normalization',
+    name: 'Normalization',
+    icon: 'Filter',
+    description: 'Min-Max or Z-score normalization',
+    category: 'processing'
+  },
+  {
+    id: 'future-extraction',
+    name: 'Future Extraction',
+    icon: 'Filter',
+    description: 'Simple forecasting (linear/naive)',
+    category: 'processing'
+  },
+  {
+    id: 'spectral-segmentation',
+    name: 'Spectral Segmentation',
+    icon: 'Filter',
+    description: 'K-means or threshold-based segmentation',
+    category: 'processing'
+  },
+  {
     id: 'blank-remover',
     name: 'Blank Remover',
     icon: 'Filter',
     description: 'Data cleaning',
+    category: 'processing'
+  },
+  {
+    id: 'custom-code',
+    name: 'Custom Code',
+    icon: 'Code',
+    description: 'Write and execute custom Python code',
     category: 'processing'
   }
 ];
@@ -78,7 +128,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Box,
   BarChart3,
   Calculator,
-  Filter
+  Filter,
+  Code
 };
 
 interface DraggableWidgetProps {
@@ -96,6 +147,8 @@ const DraggableWidget: React.FC<DraggableWidgetProps> = ({ widgetType }) => {
   }));
 
   const IconComponent = iconMap[widgetType.icon];
+  const [showFallback, setShowFallback] = useState<boolean>(true);
+  const svgPath = `/${widgetType.id}.svg`;
 
   return (
     <div
@@ -104,21 +157,29 @@ const DraggableWidget: React.FC<DraggableWidgetProps> = ({ widgetType }) => {
         isDragging ? 'opacity-50 scale-95' : 'hover:scale-105'
       }`}
     >
-      <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300
-        ${theme === 'dark'
+      <div className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${
+        theme === 'dark'
           ? 'bg-gray-200 border-2 border-blue-200'
-          : 'bg-white border-2 border-blue-200'}
-      `}>
-        <IconComponent className={`h-6 w-6 transition-colors duration-300 ${
-          theme === 'dark' ? 'text-blue-700' : 'text-blue-600'
-        }`} />
-      </div>
-      {/* Always show widget name below icon */}
-      <span className={`mt-2 text-sm font-medium text-center ${
-        theme === 'dark' ? 'text-blue-900' : 'text-blue-700'
+          : 'bg-white border-2 border-blue-200'
       }`}>
-        {widgetType.name}
-      </span>
+        <div className="icon-outer">
+            <img
+              src={svgPath}
+              alt={widgetType.name}
+              className="h-5 w-5 icon"
+              style={{ display: showFallback ? 'none' : 'block' }}
+              onLoad={() => setShowFallback(false)}
+              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; setShowFallback(true); }}
+            />
+            <IconComponent style={{ display: showFallback ? 'block' : 'none' }} className={`h-5 w-5 icon transition-colors duration-300`} />
+        </div>
+      </div>
+        {/* Always show widget name below icon */}
+        <span className={`mt-2 text-xs font-medium text-center ${
+          theme === 'dark' ? 'text-blue-900' : 'text-blue-700'
+        }`}>
+          {widgetType.name}
+        </span>
     </div>
   );
 };
@@ -133,20 +194,27 @@ const SmallWidgetItem: React.FC<{ widgetType: WidgetType }> = ({ widgetType }) =
   }));
 
   const IconComponent = iconMap[widgetType.icon];
+  const [iconLoadFailed, setIconLoadFailed] = useState(false);
 
   return (
     <li
       ref={drag as any}
-      className={`flex items-center gap-3 px-2 py-1 rounded hover:bg-blue-50 transition ${
+      className={`flex flex-col items-center gap-1 px-2 py-2 rounded hover:bg-blue-50 transition ${
         isDragging ? 'opacity-50' : ''
       }`}
       role="option"
       aria-label={widgetType.name}
     >
-      <div className={`w-8 h-8 rounded flex items-center justify-center ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
-        <IconComponent className={`h-5 w-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+  <div className={`w-14 h-14 rounded flex items-center justify-center ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+        <div className="icon-outer">
+            {!iconLoadFailed ? (
+            <img src={`/${widgetType.id}.svg`} alt={widgetType.name} className="h-5 w-5 icon" onError={() => setIconLoadFailed(true)} />
+          ) : (
+            <IconComponent className={`h-5 w-5 icon`} />
+          )}
+        </div>
       </div>
-      <span className={`text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{widgetType.name}</span>
+  <span className={`text-xs mt-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{widgetType.name}</span>
     </li>
   );
 };
@@ -171,13 +239,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
     visualization: widgetTypes.filter(w => w.category === 'visualization')
   };
 
-  const handleDragStart = (type: string) => (e: React.DragEvent) => {
-    e.dataTransfer.setData('application/widget-type', type);
-  };
+  // drag start handled via react-dnd; keep function removed to avoid unused var warnings
 
   return (
-    <aside className={`w-64 border-r transition-colors duration-300 ${
-      theme === 'dark' ? 'bg-white border-blue-100' : 'bg-white border-blue-100'
+    <aside className={`w-96 transition-colors duration-300 ${
+      theme === 'dark' ? 'bg-gray-900 border-transparent shadow-soft' : 'bg-[var(--surface)] border-transparent shadow-soft'
     }`}>
       <div className="p-6">
         <h2 className="text-lg font-semibold mb-4 text-gray-800">Widget Toolbox</h2>
@@ -217,16 +283,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
           <div>
             <button
               type="button"
-              onClick={() =>
-                setShowInputOpen((prev) => {
-                  const next = !prev;
-                  if (next) {
-                    setShowProcessingOpen(false);
-                    setShowVisualizationOpen(false);
-                  }
-                  return next;
-                })
-              }
+              onClick={() => setShowInputOpen((prev) => !prev)}
               aria-expanded={showInputOpen}
               className={`w-full flex items-center gap-3 p-2 rounded hover:bg-blue-50 transition text-left ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
               aria-label="Toggle Data Input"
@@ -241,7 +298,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
 
             {showInputOpen && (
               <div className="mb-2 pl-4 border-l border-gray-100 dark:border-gray-800">
-                <ul className="list-none p-0 m-0">
+                <ul className="grid grid-cols-3 gap-3 list-none p-0 m-0">
                   {categories.input
                     .filter((w) => w.name.toLowerCase().includes(search.toLowerCase()))
                     .map((widget) => (
@@ -256,16 +313,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
           <div>
             <button
               type="button"
-              onClick={() =>
-                setShowProcessingOpen((prev) => {
-                  const next = !prev;
-                  if (next) {
-                    setShowInputOpen(false);
-                    setShowVisualizationOpen(false);
-                  }
-                  return next;
-                })
-              }
+              onClick={() => setShowProcessingOpen((prev) => !prev)}
               aria-expanded={showProcessingOpen}
               className={`w-full flex items-center gap-3 p-2 rounded hover:bg-blue-50 transition text-left ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
               aria-label="Toggle Processing"
@@ -280,7 +328,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
 
             {showProcessingOpen && (
               <div className="mb-2 pl-4 border-l border-gray-100 dark:border-gray-800">
-                <ul className="list-none p-0 m-0">
+                <ul className="grid grid-cols-3 gap-3 list-none p-0 m-0">
                   {categories.processing
                     .filter((w) => w.name.toLowerCase().includes(search.toLowerCase()))
                     .map((widget) => (
@@ -295,16 +343,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
           <div>
             <button
               type="button"
-              onClick={() =>
-                setShowVisualizationOpen((prev) => {
-                  const next = !prev;
-                  if (next) {
-                    setShowInputOpen(false);
-                    setShowProcessingOpen(false);
-                  }
-                  return next;
-                })
-              }
+              onClick={() => setShowVisualizationOpen((prev) => !prev)}
               aria-expanded={showVisualizationOpen}
               className={`w-full flex items-center gap-3 p-2 rounded hover:bg-blue-50 transition text-left ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
               aria-label="Toggle Visualization"
@@ -319,7 +358,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
 
             {showVisualizationOpen && (
               <div className="mb-2 pl-4 border-l border-gray-100 dark:border-gray-800">
-                <ul className="list-none p-0 m-0">
+                <ul className="grid grid-cols-3 gap-3 list-none p-0 m-0">
                   {categories.visualization
                     .filter((w) => w.name.toLowerCase().includes(search.toLowerCase()))
                     .map((widget) => (

@@ -1,6 +1,86 @@
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root{
+	--bg: #f8fafc;
+	--surface: #ffffff;
+	--primary: #0f62fe;
+	--primary-rgb: 15,98,254;
+	--accent: #00b4ff;
+	--muted: #6b7280;
+}
+
+html,body,#root{
+	height:100%;
+}
+
+body{
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+	background: var(--bg);
+	color: #0f1724;
+}
+
+.card {
+	background: var(--surface);
+	box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+	border-radius: 12px;
+}
+
+.btn-primary{
+	background: var(--primary);
+	color: white;
+}
+
+.btn-outline{
+	border: 1px solid rgba(15,98,254,0.12);
+	color: var(--primary);
+	background: transparent;
+}
+
+/* Button hover/focus polish */
+.btn-primary, .btn-outline {
+	transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn-primary:hover { transform: translateY(-1px); opacity: .98 }
+.btn-outline:hover { transform: translateY(-1px); }
+.btn-primary:focus, .btn-outline:focus { outline: none; box-shadow: 0 0 0 4px rgba(var(--primary-rgb),0.08); }
+
+/* Inputs */
+.input {
+	background: var(--surface);
+	border: 1px solid rgba(15,98,254,0.06);
+	padding: .5rem .75rem;
+	border-radius: 8px;
+}
+.input:focus { box-shadow: 0 0 0 4px rgba(var(--primary-rgb),0.06); outline: none; }
+
+/* Accessibility: visible focus for keyboard users */
+button:focus-visible, a:focus-visible, input:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(var(--primary-rgb),0.12); }
+
+[data-theme="dark"] {
+	--bg: #071024;
+	--surface: #0f1724;
+	--primary: #7cc1ff;
+	--accent: #00e0ff;
+	--text: #e6eef6;
+	--muted: #94a3b8;
+}
+
+/* Dark mode utility overrides for Tailwind classes (improves coverage without changing all components) */
+[data-theme="dark"] .bg-white { background-color: var(--surface) !important; }
+[data-theme="dark"] .bg-gray-50 { background-color: rgba(255,255,255,0.02) !important; }
+[data-theme="dark"] .bg-gray-800 { background-color: #0b1220 !important; }
+[data-theme="dark"] .text-gray-800, [data-theme="dark"] .text-gray-700 { color: var(--text) !important; }
+[data-theme="dark"] .text-gray-600, [data-theme="dark"] .text-gray-500 { color: var(--muted) !important; }
+[data-theme="dark"] .border-gray-200, [data-theme="dark"] .border-gray-100, [data-theme="dark"] .border-blue-200 { border-color: rgba(255,255,255,0.04) !important; }
+[data-theme="dark"] .shadow-md { box-shadow: 0 8px 20px rgba(2,6,23,0.6) !important; }
+[data-theme="dark"] .bg-blue-50 { background-color: rgba(124,193,255,0.04) !important; }
+[data-theme="dark"] .text-white { color: #fff !important; }
+[data-theme="dark"] .bg-gray-200 { background-color: rgba(255,255,255,0.03) !important; }
 
 /* Login page slideshow */
 .login-slide {
@@ -18,4 +98,62 @@
 	30% { opacity: 1; transform: scale(1); }
 	35% { opacity: 0; transform: scale(0.98); }
 	100% { opacity: 0; transform: scale(0.98); }
+}
+
+/* Connection pop animation */
+.connection-pop {
+  animation: connectionPop 400ms ease-out forwards;
+}
+
+@keyframes connectionPop {
+  0% { stroke-width: 0; opacity: 0.0; filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+  50% { stroke-width: 8; opacity: 1; filter: drop-shadow(0 6px 8px rgba(13,110,253,0.2)); }
+  100% { stroke-width: 3; opacity: 1; filter: drop-shadow(0 2px 4px rgba(13,110,253,0.08)); }
+}
+
+/* Icon utility: flat, consistent color */
+.icon {
+	color: #333333; /* base color for icon components and SVGs */
+}
+
+/* Ensure embedded SVGs and <img> SVGs inherit the icon color */
+.icon svg, .icon svg * { fill: currentColor !important; stroke: currentColor !important; }
+.icon img { color: #333333; }
+
+/* Outer white background for icons (keeps a consistent white outer layer) */
+.icon-outer {
+	background: #ffffff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px; /* breathing room for larger icons */
+	border: 2px solid #333333; /* black square border */
+}
+
+/* Ensure outer icon background and border remain visible in dark theme too */
+[data-theme="dark"] .icon-outer { background-color: #ffffff !important; border-color: #333333 !important; }
+
+/* For smaller control circles (canvas center handle) */
+.icon-outer.control-circle {
+	width: 48px;
+	height: 48px;
+	padding: 6px;
+	border-radius: 9999px; /* circular */
+	overflow: hidden;
+}
+
+/* ensure images and inline svgs are constrained and centered */
+.icon-outer img, .icon-outer svg {
+	max-width: 100%;
+	max-height: 100%;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	display: block;
+}
+
+.icon-outer .truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

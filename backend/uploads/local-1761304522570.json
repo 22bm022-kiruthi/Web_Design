@@ -1,0 +1,427 @@
+{
+  "filename": "test_raman_rows.csv",
+  "parsedData": [
+    {
+      "﻿S.No": "1",
+      "Sample name": "Polystyrene (PS)",
+      "Raman Shift": "1078.52",
+      "Raman intensity": "7160.15"
+    },
+    {
+      "﻿S.No": "2",
+      "Sample name": "WS2 (tungsten disulfide)",
+      "Raman Shift": "2084.21",
+      "Raman intensity": "10208.26"
+    },
+    {
+      "﻿S.No": "3",
+      "Sample name": "Silicon Wafer (Si)",
+      "Raman Shift": "531.17",
+      "Raman intensity": "5791.98"
+    },
+    {
+      "﻿S.No": "4",
+      "Sample name": "DNA (salmon sperm)",
+      "Raman Shift": "2682.13",
+      "Raman intensity": "568.32"
+    },
+    {
+      "﻿S.No": "5",
+      "Sample name": "Titanium Dioxide (TiO2)",
+      "Raman Shift": "2569.69",
+      "Raman intensity": "3741.55"
+    },
+    {
+      "﻿S.No": "6",
+      "Sample name": "Reduced Graphene Oxide (rGO)",
+      "Raman Shift": "1187.12",
+      "Raman intensity": "10578.56"
+    },
+    {
+      "﻿S.No": "7",
+      "Sample name": "Carbon Nanotubes (CNT)",
+      "Raman Shift": "2640.46",
+      "Raman intensity": "654.94"
+    },
+    {
+      "﻿S.No": "8",
+      "Sample name": "Polystyrene (PS)",
+      "Raman Shift": "2609.86",
+      "Raman intensity": "1010.61"
+    },
+    {
+      "﻿S.No": "9",
+      "Sample name": "Hemoglobin",
+      "Raman Shift": "2094.19",
+      "Raman intensity": "6192.34"
+    },
+    {
+      "﻿S.No": "10",
+      "Sample name": "Zinc Oxide (ZnO)",
+      "Raman Shift": "1580.92",
+      "Raman intensity": "10997.94"
+    },
+    {
+      "﻿S.No": "11",
+      "Sample name": "DNA (salmon sperm)",
+      "Raman Shift": "2127.55",
+      "Raman intensity": "32.25"
+    },
+    {
+      "﻿S.No": "12",
+      "Sample name": "Hemoglobin",
+      "Raman Shift": "2577.01",
+      "Raman intensity": "3329.78"
+    },
+    {
+      "﻿S.No": "13",
+      "Sample name": "PMMA (Polymethyl methacrylate)",
+      "Raman Shift": "1031.2",
+      "Raman intensity": "2905.9"
+    },
+    {
+      "﻿S.No": "14",
+      "Sample name": "Polyaniline (PANI)",
+      "Raman Shift": "3192.4",
+      "Raman intensity": "4317.79"
+    },
+    {
+      "﻿S.No": "15",
+      "Sample name": "DNA (salmon sperm)",
+      "Raman Shift": "3090.77",
+      "Raman intensity": "8513.02"
+    },
+    {
+      "﻿S.No": "16",
+      "Sample name": "Human Serum Sample (HSS)",
+      "Raman Shift": "2380.38",
+      "Raman intensity": "3712.94"
+    },
+    {
+      "﻿S.No": "17",
+      "Sample name": "Calcium Carbonate (CaCO3)",
+      "Raman Shift": "2118.65",
+      "Raman intensity": "2135.27"
+    },
+    {
+      "﻿S.No": "18",
+      "Sample name": "Calcium Carbonate (CaCO3)",
+      "Raman Shift": "2900.1",
+      "Raman intensity": "8756.2"
+    },
+    {
+      "﻿S.No": "19",
+      "Sample name": "Titanium Dioxide (TiO2)",
+      "Raman Shift": "1793.14",
+      "Raman intensity": "7401.21"
+    },
+    {
+      "﻿S.No": "20",
+      "Sample name": "Human Serum Sample (HSS)",
+      "Raman Shift": "2292.14",
+      "Raman intensity": "8520.44"
+    },
+    {
+      "﻿S.No": "21",
+      "Sample name": "Titanium Dioxide (TiO2)",
+      "Raman Shift": "2134.92",
+      "Raman intensity": "4614.76"
+    },
+    {
+      "﻿S.No": "22",
+      "Sample name": "MoS2 (molybdenum disulfide)",
+      "Raman Shift": "850.38",
+      "Raman intensity": "3645.11"
+    },
+    {
+      "﻿S.No": "23",
+      "Sample name": "Bovine Serum Albumin (BSA)",
+      "Raman Shift": "2489.43",
+      "Raman intensity": "488.09"
+    },
+    {
+      "﻿S.No": "24",
+      "Sample name": "PMMA (Polymethyl methacrylate)",
+      "Raman Shift": "1672.25",
+      "Raman intensity": "10529.6"
+    },
+    {
+      "﻿S.No": "25",
+      "Sample name": "Bovine Serum Albumin (BSA)",
+      "Raman Shift": "2529.04",
+      "Raman intensity": "10762.53"
+    },
+    {
+      "﻿S.No": "26",
+      "Sample name": "Gold Nanoparticles (AuNPs)",
+      "Raman Shift": "2332.55",
+      "Raman intensity": "5921.61"
+    },
+    {
+      "﻿S.No": "27",
+      "Sample name": "Titanium Dioxide (TiO2)",
+      "Raman Shift": "1865.3",
+      "Raman intensity": "10074.05"
+    },
+    {
+      "﻿S.No": "28",
+      "Sample name": "Blood Plasma",
+      "Raman Shift": "1640.73",
+      "Raman intensity": "10943.39"
+    },
+    {
+      "﻿S.No": "29",
+      "Sample name": "Human Serum Sample (HSS)",
+      "Raman Shift": "681.45",
+      "Raman intensity": "9590.86"
+    },
+    {
+      "﻿S.No": "30",
+      "Sample name": "Calcium Carbonate (CaCO3)",
+      "Raman Shift": "1959.83",
+      "Raman intensity": "12.09"
+    },
+    {
+      "﻿S.No": "31",
+      "Sample name": "Polystyrene (PS)",
+      "Raman Shift": "2786.81",
+      "Raman intensity": "6943.06"
+    },
+    {
+      "﻿S.No": "32",
+      "Sample name": "Polystyrene (PS)",
+      "Raman Shift": "2704.39",
+      "Raman intensity": "1122.49"
+    },
+    {
+      "﻿S.No": "33",
+      "Sample name": "Titanium Dioxide (TiO2)",
+      "Raman Shift": "648.41",
+      "Raman intensity": "11405.34"
+    },
+    {
+      "﻿S.No": "34",
+      "Sample name": "Carbon Nanotubes (CNT)",
+      "Raman Shift": "149.83",
+      "Raman intensity": "5907"
+    },
+    {
+      "﻿S.No": "35",
+      "Sample name": "Polyaniline (PANI)",
+      "Raman Shift": "418.39",
+      "Raman intensity": "2829.93"
+    },
+    {
+      "﻿S.No": "36",
+      "Sample name": "Reduced Graphene Oxide (rGO)",
+      "Raman Shift": "2986.81",
+      "Raman intensity": "5786.74"
+    },
+    {
+      "﻿S.No": "37",
+      "Sample name": "Zinc Oxide (ZnO)",
+      "Raman Shift": "2345.99",
+      "Raman intensity": "4819.63"
+    },
+    {
+      "﻿S.No": "38",
+      "Sample name": "Polystyrene (PS)",
+      "Raman Shift": "1839.56",
+      "Raman intensity": "11372.94"
+    },
+    {
+      "﻿S.No": "39",
+      "Sample name": "Gold Nanoparticles (AuNPs)",
+      "Raman Shift": "2611.28",
+      "Raman intensity": "1875.5"
+    },
+    {
+      "﻿S.No": "40",
+      "Sample name": "Blood Plasma",
+      "Raman Shift": "1959.4",
+      "Raman intensity": "3087.22"
+    },
+    {
+      "﻿S.No": "41",
+      "Sample name": "PMMA (Polymethyl methacrylate)",
+      "Raman Shift": "3162.37",
+      "Raman intensity": "760.92"
+    },
+    {
+      "﻿S.No": "42",
+      "Sample name": "WS2 (tungsten disulfide)",
+      "Raman Shift": "668.09",
+      "Raman intensity": "10759.69"
+    },
+    {
+      "﻿S.No": "43",
+      "Sample name": "Human Serum Sample (HSS)",
+      "Raman Shift": "2251.81",
+      "Raman intensity": "8065.11"
+    },
+    {
+      "﻿S.No": "44",
+      "Sample name": "Graphene",
+      "Raman Shift": "1401.69",
+      "Raman intensity": "4808.6"
+    },
+    {
+      "﻿S.No": "45",
+      "Sample name": "Silver Nanoparticles (AgNPs)",
+      "Raman Shift": "2791.03",
+      "Raman intensity": "2887.74"
+    },
+    {
+      "﻿S.No": "46",
+      "Sample name": "Human Serum Sample (HSS)",
+      "Raman Shift": "533.8",
+      "Raman intensity": "11200.8"
+    },
+    {
+      "﻿S.No": "47",
+      "Sample name": "Carbon Nanotubes (CNT)",
+      "Raman Shift": "3187.19",
+      "Raman intensity": "6426.74"
+    },
+    {
+      "﻿S.No": "48",
+      "Sample name": "PET (Polyethylene terephthalate)",
+      "Raman Shift": "910.67",
+      "Raman intensity": "8486.77"
+    },
+    {
+      "﻿S.No": "49",
+      "Sample name": "Zinc Oxide (ZnO)",
+      "Raman Shift": "424.98",
+      "Raman intensity": "6798.2"
+    },
+    {
+      "﻿S.No": "50",
+      "Sample name": "MoS2 (molybdenum disulfide)",
+      "Raman Shift": "2353.79",
+      "Raman intensity": "8002.06"
+    },
+    {
+      "﻿S.No": "51",
+      "Sample name": "Graphene",
+      "Raman Shift": "2756.97",
+      "Raman intensity": "1920.99"
+    },
+    {
+      "﻿S.No": "52",
+      "Sample name": "PMMA (Polymethyl methacrylate)",
+      "Raman Shift": "753.75",
+      "Raman intensity": "1965.81"
+    },
+    {
+      "﻿S.No": "53",
+      "Sample name": "Hemoglobin",
+      "Raman Shift": "482.3",
+      "Raman intensity": "8961.31"
+    },
+    {
+      "﻿S.No": "54",
+      "Sample name": "DNA (salmon sperm)",
+      "Raman Shift": "2099.81",
+      "Raman intensity": "10203.7"
+    },
+    {
+      "﻿S.No": "55",
+      "Sample name": "Bovine Serum Albumin (BSA)",
+      "Raman Shift": "221.76",
+      "Raman intensity": "5458.85"
+    },
+    {
+      "﻿S.No": "56",
+      "Sample name": "Polypyrrole (PPy)",
+      "Raman Shift": "861.45",
+      "Raman intensity": "5488.84"
+    },
+    {
+      "﻿S.No": "57",
+      "Sample name": "Hemoglobin",
+      "Raman Shift": "1393.15",
+      "Raman intensity": "3193.56"
+    },
+    {
+      "﻿S.No": "58",
+      "Sample name": "Bovine Serum Albumin (BSA)",
+      "Raman Shift": "1941.64",
+      "Raman intensity": "3551.97"
+    },
+    {
+      "﻿S.No": "59",
+      "Sample name": "PET (Polyethylene terephthalate)",
+      "Raman Shift": "2358.31",
+      "Raman intensity": "7046.98"
+    },
+    {
+      "﻿S.No": "60",
+      "Sample name": "Bovine Serum Albumin (BSA)",
+      "Raman Shift": "79.79",
+      "Raman intensity": "6086.8"
+    },
+    {
+      "﻿S.No": "61",
+      "Sample name": "Pluto",
+      "Raman Shift": "1585.34",
+      "Raman intensity": "9452.78"
+    },
+    {
+      "﻿S.No": "62",
+      "Sample name": "Graphene",
+      "Raman Shift": "1879.34",
+      "Raman intensity": "8552.78"
+    },
+    {
+      "﻿S.No": "63",
+      "Sample name": "Lactic Acid",
+      "Raman Shift": "1450.27",
+      "Raman intensity": "8120.45"
+    },
+    {
+      "﻿S.No": "64",
+      "Sample name": "thorium",
+      "Raman Shift": "1954.48",
+      "Raman intensity": "9542.87"
+    },
+    {
+      "﻿S.No": "65",
+      "Sample name": "gold",
+      "Raman Shift": "1974.48",
+      "Raman intensity": "9642.87"
+    },
+    {
+      "﻿S.No": "66",
+      "Sample name": "silver",
+      "Raman Shift": "1564.48",
+      "Raman intensity": "9672.87"
+    },
+    {
+      "﻿S.No": "67",
+      "Sample name": "tungsten",
+      "Raman Shift": "753.45",
+      "Raman intensity": "475.48"
+    },
+    {
+      "﻿S.No": "68",
+      "Sample name": "rhodium",
+      "Raman Shift": "1458.24",
+      "Raman intensity": "875.48"
+    },
+    {
+      "﻿S.No": "69",
+      "Sample name": "iodine",
+      "Raman Shift": "963.78",
+      "Raman intensity": "457.21"
+    },
+    {
+      "﻿S.No": "70",
+      "Sample name": "nitrogen",
+      "Raman Shift": "1246.54",
+      "Raman intensity": "754.1"
+    }
+  ],
+  "supabase": null,
+  "storage": null
+}

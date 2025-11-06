@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: raman-backend
+    runtime: node
+    region: oregon
+    buildCommand: cd backend && npm install && pip install -r python/requirements.txt
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        value: https://zatafiglyptbujqzsohc.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdGFmaWdseXB0YnVqcXpzb2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExOTI2NjcsImV4cCI6MjA3Njc2ODY2N30.a7L-z0BNjZqMEo4dMYGPWH1hQXfg5o_2zL3T-vEaT0s

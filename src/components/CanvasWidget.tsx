@@ -12,6 +12,7 @@ import {
   Settings,
   GripVertical,
   Code,
+  Table,
 } from 'lucide-react';
 import { Widget } from '../types';
 import WidgetSelectorModal from './WidgetSelectorModal';
@@ -23,11 +24,13 @@ import ScatterPlotModal from './ScatterPlotModal';
 import BoxPlotModal from './BoxPlotModal';
 import BarChartModal from './BarChartModal';
 import { useTheme } from '../contexts/ThemeContext';
+import OrangeStyleWidget from './OrangeStyleWidget';
+import { getWidgetColors, getWidgetLabel } from '../config/orangeColors';
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   'file-upload': Upload,
   'supabase': Database,
-  'data-table': Database,
+  'data-table': Table,
   'line-chart': LineChart,
   'scatter-plot': Scatter3D,
   'box-plot': Box,
@@ -320,43 +323,35 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
       const hasData = (widget.data?.tableData && widget.data.tableData.length > 0) || 
                       (widget.data?.parsedData && widget.data.parsedData.length > 0);
       
+      const colors = getWidgetColors('data-table');
+      
       return (
-        <div className="flex flex-col items-center justify-center w-full h-full" onClick={(e) => e.stopPropagation()}>
-          {/* Icon in gray dashed circle - Orange style */}
-          <div className="flex flex-col items-center justify-center gap-2">
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={(e) => { e.stopPropagation(); setShowTableModal(true); }}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowTableModal(true); } }}
-              className="rounded-full flex items-center justify-center focus:outline-none bg-white cursor-pointer hover:shadow-md transition-shadow"
-              style={{ 
-                border: '2px dashed #9CA3AF',
-                width: 72,
-                height: 72
+        <OrangeStyleWidget
+          icon={Table}
+          label={getWidgetLabel('data-table')}
+          statusText={hasData ? 'Data loaded' : 'No data'}
+          statusColor={hasData ? 'green' : 'gray'}
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          {/* Controls section - shown on hover */}
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <button 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                setShowTableModal(true); 
+              }} 
+              className="px-3 py-1.5 text-xs font-medium rounded transition-colors"
+              style={{
+                backgroundColor: colors.light,
+                color: colors.main,
               }}
             >
-              <Database className="h-8 w-8 text-gray-600" />
-            </div>
-
-            {/* Widget title */}
-            <div className="text-sm font-semibold text-gray-700 text-center">Data Table</div>
-            
-            {/* Status */}
-            <div className="text-xs text-center">
-              {hasData ? (
-                <span className="text-green-600 font-medium">Data loaded</span>
-              ) : (
-                <span className="text-gray-500">No data</span>
-              )}
-            </div>
-            
-            {/* Open table modal */}
-            <div className="mt-2">
-              <button onClick={(e) => { e.stopPropagation(); setShowTableModal(true); }} className="text-xs text-blue-600 underline">Open table</button>
-            </div>
+              Open table
+            </button>
           </div>
-        </div>
+        </OrangeStyleWidget>
       );
     }
 

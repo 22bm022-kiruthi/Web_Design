@@ -256,23 +256,25 @@ const Canvas: React.FC<CanvasProps> = ({
     <div
       ref={setCanvasRef}
       className={`relative w-full h-full overflow-hidden transition-all duration-300 ${
-        isOver ? (theme === 'dark' ? 'bg-gray-800/50' : 'bg-blue-50/50') : ''
+        isOver ? (theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50') : ''
       }`}
       onMouseMove={handleMouseMove}
       onClick={handleCancelConnection}
       // To prevent canvas from losing drag events by stopping propagation on inner elements:
       onDragOver={(e) => e.preventDefault()}
     >
-      {/* Grid Background */}
+      {/* Orange Data Mining style background - Light gray with subtle grid */}
       <div
-        className={`absolute inset-0 opacity-30 ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+        className={`absolute inset-0 ${
+          theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
         }`}
         style={{
           backgroundImage:
             theme === 'dark'
-              ? `radial-gradient(circle, rgba(148, 163, 184, 0.3) 1px, transparent 1px)`
-              : `radial-gradient(circle, rgba(59, 130, 246, 0.3) 1px, transparent 1px)`,
+              ? `linear-gradient(rgba(75, 85, 99, 0.1) 1px, transparent 1px),
+                 linear-gradient(90deg, rgba(75, 85, 99, 0.1) 1px, transparent 1px)`
+              : `linear-gradient(rgba(229, 231, 235, 0.5) 1px, transparent 1px),
+                 linear-gradient(90deg, rgba(229, 231, 235, 0.5) 1px, transparent 1px)`,
           backgroundSize: '20px 20px',
         }}
       />

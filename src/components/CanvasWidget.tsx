@@ -1443,19 +1443,48 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
         >
           {/* Main icon circle - Orange Data Mining style */}
           <div className="flex flex-col items-center gap-2 mb-3">
-            {/* Outer dashed connection circle */}
+            {/* Outer circle with connection ports - Orange style */}
             <div 
               className="rounded-full flex items-center justify-center relative"
               style={{
-                border: '2px dashed #FFE4CC',
                 width: 90,
                 height: 90,
                 background: '#FFF8F0'
               }}
             >
+              {/* Connection ports on left side (input) */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2">
+                <div 
+                  className="w-4 h-8 rounded-l-full border-2 border-orange-400 bg-white"
+                  style={{
+                    borderRight: 'none',
+                    clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)'
+                  }}
+                ></div>
+              </div>
+              
+              {/* Connection ports on right side (output) */}
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2">
+                <div 
+                  className="w-4 h-8 rounded-r-full border-2 border-orange-400 bg-white"
+                  style={{
+                    borderLeft: 'none',
+                    clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)'
+                  }}
+                ></div>
+              </div>
+              
+              {/* Dashed border circle */}
+              <div 
+                className="absolute inset-0 rounded-full"
+                style={{
+                  border: '2px dashed #FFE4CC'
+                }}
+              ></div>
+              
               {/* Inner solid circle with icon */}
               <div 
-                className="rounded-full flex items-center justify-center"
+                className="rounded-full flex items-center justify-center relative z-10"
                 style={{
                   width: 65,
                   height: 65,
@@ -1464,15 +1493,6 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
                 }}
               >
                 <Database className="h-7 w-7 text-white" strokeWidth={2} />
-              </div>
-              
-              {/* Top connection dot */}
-              <div className="absolute -top-1 left-1/2 -translate-x-1/2">
-                <div className="w-2.5 h-2.5 bg-orange-400 rounded-full border-2 border-white"></div>
-              </div>
-              {/* Bottom connection dot */}
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
-                <div className="w-2.5 h-2.5 bg-orange-400 rounded-full border-2 border-white"></div>
               </div>
             </div>
             

@@ -16,23 +16,25 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
   theme,
   createdAt,
 }) => {
-  // Calculate control points for a smooth cubic bezier curve (Orange-style)
+  // Calculate control points for smooth cubic bezier curve - Orange Data Mining style
   const dx = to.x - from.x;
-  const controlOffset = Math.abs(dx) * 0.6; // Smoother curves like Orange
-
+  const dy = to.y - from.y;
+  
+  // Horizontal bezier curve with smooth transitions
+  const controlOffset = Math.min(Math.abs(dx) * 0.5, 150);
   const controlPoint1 = { x: from.x + controlOffset, y: from.y };
   const controlPoint2 = { x: to.x - controlOffset, y: to.y };
 
   const pathData = `M ${from.x} ${from.y} C ${controlPoint1.x} ${controlPoint1.y}, ${controlPoint2.x} ${controlPoint2.y}, ${to.x} ${to.y}`;
 
-  // Orange Data Mining style colors - gray/neutral connections
-  const lineColor = theme === 'dark' ? '#6B7280' : '#9CA3AF'; // Gray color
-  const previewColor = theme === 'dark' ? '#60A5FA' : '#3B82F6'; // Blue for preview
-  const markerId = `arrowhead-${isPreview ? 'preview' : 'normal'}-orange`;
+  // Orange Data Mining style - simple gray lines
+  const lineColor = theme === 'dark' ? '#78716C' : '#A8A29E'; // Stone gray
+  const previewColor = theme === 'dark' ? '#60A5FA' : '#3B82F6';
+  const markerId = `arrow-${isPreview ? 'preview' : 'normal'}-${theme}`;
 
   return (
-    <>
-      {/* Main dashed line - Orange Data Mining style */}
+    <g className="connection-line-group">
+      {/* Main connection line - Orange style: solid, thin, gray */}
       <path
         d={pathData}
         fill="none"
@@ -40,40 +42,51 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
         strokeWidth={isPreview ? 2.5 : 2}
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeDasharray="8,6"
-        className={`transition-all duration-300 ${
-          isPreview ? 'animate-pulse' : ''
-        } ${
-          createdAt && Date.now() - createdAt < 1500 ? 'connection-pop' : ''
+        strokeDasharray={isPreview ? "5,5" : "none"}
+        className={`transition-all duration-200 ${
+          isPreview ? 'opacity-70' : 'opacity-60 hover:opacity-80'
         }`}
-        opacity={isPreview ? 0.8 : 0.6}
+        style={{
+          filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
+        }}
       />
 
-      {/* Small animated dot moving along connection (optional) */}
+      {/* Animated data flow indicator - small circle moving along path */}
       {!isPreview && (
-        <circle r={3} fill={lineColor} className="opacity-50">
-          <animateMotion dur="3s" repeatCount="indefinite" path={pathData} />
+        <circle 
+          r={2.5} 
+          fill={theme === 'dark' ? '#FFF' : '#FF9800'}
+          className="opacity-60"
+        >
+          <animateMotion 
+            dur="4s" 
+            repeatCount="indefinite" 
+            path={pathData}
+            keyPoints="0;1"
+            keyTimes="0;1"
+          />
         </circle>
       )}
 
-      {/* Define arrowhead marker - Orange style */}
+      {/* Arrow marker definition */}
       <defs>
         <marker
           id={markerId}
-          markerWidth={8}
+          markerWidth={6}
           markerHeight={6}
-          refX={7}
+          refX={5}
           refY={3}
           orient="auto"
+          markerUnits="strokeWidth"
         >
-          <polygon
-            points="0 0, 8 3, 0 6"
+          <path
+            d="M 0 0 L 6 3 L 0 6 z"
             fill={isPreview ? previewColor : lineColor}
           />
         </marker>
       </defs>
 
-      {/* Transparent path to show arrowhead at end */}
+      {/* Arrow at end of line */}
       <path
         d={pathData}
         fill="none"
@@ -81,7 +94,7 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
         strokeWidth={1}
         markerEnd={`url(#${markerId})`}
       />
-    </>
+    </g>
   );
 };
 

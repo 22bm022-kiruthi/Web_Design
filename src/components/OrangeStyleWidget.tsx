@@ -44,7 +44,7 @@ const OrangeStyleWidget: React.FC<OrangeStyleWidgetProps> = ({
     >
       {/* Main icon circle - Orange Data Mining style */}
       <div className="flex flex-col items-center gap-2 mb-3">
-        {/* Outer circle with connection ports */}
+        {/* Outer circle without connection ports */}
         <div 
           className="rounded-full flex items-center justify-center relative"
           style={{
@@ -53,30 +53,6 @@ const OrangeStyleWidget: React.FC<OrangeStyleWidgetProps> = ({
             background: bgColor
           }}
         >
-          {/* Left connection port (INPUT) */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2">
-            <div 
-              className="w-4 h-8 rounded-l-full border-2 bg-white"
-              style={{
-                borderColor: mainColor,
-                borderRight: 'none',
-                clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)'
-              }}
-            ></div>
-          </div>
-          
-          {/* Right connection port (OUTPUT) */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2">
-            <div 
-              className="w-4 h-8 rounded-r-full border-2 bg-white"
-              style={{
-                borderColor: mainColor,
-                borderLeft: 'none',
-                clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)'
-              }}
-            ></div>
-          </div>
-          
           {/* Dashed border circle */}
           <div 
             className="absolute inset-0 rounded-full"

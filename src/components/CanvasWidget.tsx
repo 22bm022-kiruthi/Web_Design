@@ -356,24 +356,35 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
     }
 
     if (widget.type === 'file-upload') {
-      // Render the upload icon inside the standard connection circle so it matches other widgets
+      const colors = getWidgetColors('file-upload');
+      const hasData = widget.data?.parsedData && widget.data.parsedData.length > 0;
+      
       return (
-        <div className="flex flex-col items-center justify-center w-full h-full cursor-default px-2" onClick={(e) => e.stopPropagation()}>
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => { e.stopPropagation(); (fileInputRef.current as HTMLInputElement | null)?.click(); }}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); (fileInputRef.current as HTMLInputElement | null)?.click(); } }}
-            className="rounded-full flex items-center justify-center focus:outline-none"
-            style={{ borderRadius: 999, width: 80, height: 80 }}
-          >
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center icon-outer`} style={{ width: 64, height: 64 }}>
-              <Upload className={`h-6 w-6 transition-transform duration-200 icon ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`} />
-            </div>
+        <OrangeStyleWidget
+          icon={Upload}
+          label="File Upload"
+          statusText={hasData ? 'File loaded' : uploadingLocal ? 'Uploading...' : 'No file'}
+          statusColor={hasData ? 'green' : uploadingLocal ? 'orange' : 'gray'}
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <button 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                (fileInputRef.current as HTMLInputElement | null)?.click(); 
+              }} 
+              className="px-3 py-1.5 text-xs font-medium rounded transition-colors text-white"
+              style={{ backgroundColor: colors.main }}
+            >
+              {hasData ? 'Change File' : 'Select File'}
+            </button>
+            {uploadErrorLocal && (
+              <div className="text-xs text-red-600 text-center">{uploadErrorLocal}</div>
+            )}
           </div>
-
-          <div className="mt-2 text-[12px] font-medium text-center">File Upload</div>
-
+          
           {/* hidden native input used to open file explorer */}
           <input
             ref={fileInputRef as any}
@@ -382,9 +393,7 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
             className="hidden"
             onChange={(ev) => handleLocalFile(ev.target.files ? ev.target.files[0] : null)}
           />
-          {uploadingLocal && <div className="mt-2 text-xs text-yellow-600">Uploading...</div>}
-          {uploadErrorLocal && <div className="mt-2 text-xs text-red-600">{uploadErrorLocal}</div>}
-        </div>
+        </OrangeStyleWidget>
       );
       }
     
@@ -1444,14 +1453,14 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
               style={{
                 width: 90,
                 height: 90,
-                background: '#FFF8F0'
+                background: '#E3F2FD'
               }}
             >
               {/* Dashed border circle */}
               <div 
                 className="absolute inset-0 rounded-full"
                 style={{
-                  border: '2px dashed #FFE4CC'
+                  border: '2px dashed #BBDEFB'
                 }}
               ></div>
               
@@ -1461,8 +1470,8 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
                 style={{
                   width: 65,
                   height: 65,
-                  background: '#FF9800',
-                  boxShadow: '0 2px 8px rgba(255, 152, 0, 0.3)'
+                  background: '#2196F3',
+                  boxShadow: '0 2px 8px rgba(33, 150, 243, 0.3)'
                 }}
               >
                 <Database className="h-7 w-7 text-white" strokeWidth={2} />
@@ -1527,113 +1536,139 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
       );
     }
     if (widget.type === 'mean-average') {
-      // Mean/Average widget: selection UI above, icon inside a larger connection-style circle, label below.
-      const toggleRow = (idx: number) => {
-        setSelectedRows((prev) => (prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]));
-        if (!selectedRows.includes(idx)) setSelectedCols([]);
-      };
-      const toggleCol = (idx: number) => {
-        setSelectedCols((prev) => (prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]));
-        if (!selectedCols.includes(idx)) setSelectedRows([]);
-      };
-      void toggleRow;
-      void toggleCol;
-
+      const colors = getWidgetColors('mean-average');
+      
       return (
-        <div className="flex flex-col items-center justify-center w-full h-full cursor-default px-2" onClick={(e) => e.stopPropagation()}>
-          {/* Selection handled in modal; widget shows only the icon */}
-
-          {/* Outer connection circle */}
-          <div className="rounded-full p-1 flex items-center justify-center" style={{ border: '2px dashed rgba(0,0,0,0.06)', borderRadius: 999 }}>
-            {/* Inner icon circle (clickable) */}
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={(e) => { e.stopPropagation(); setShowMeanModal(true); }}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowMeanModal(true); } }}
-              className="rounded-full p-1 flex items-center justify-center focus:outline-none"
-              style={{ borderRadius: 999 }}
+        <OrangeStyleWidget
+          icon={Calculator}
+          label="Mean Average"
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <button 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                setShowMeanModal(true); 
+              }} 
+              className="px-3 py-1.5 text-xs font-medium rounded transition-colors"
+              style={{
+                backgroundColor: colors.main,
+                color: 'white',
+              }}
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center icon-outer`} style={{ width: 64, height: 64 }}>
-                <IconComponent className={`h-6 w-6 transition-transform duration-200 icon`} />
-              </div>
-            </div>
+              Configure
+            </button>
           </div>
-
-          <div className="mt-2 text-[12px] font-medium text-center">Mean Average</div>
-        </div>
+        </OrangeStyleWidget>
       );
     }
     if (widget.type === 'line-chart') {
+      const colors = getWidgetColors('line-chart');
+      
       return (
-        <div className="flex flex-col items-center w-full" onClick={(e) => e.stopPropagation()}>
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => { e.stopPropagation(); setShowLineChartModal(true); }}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowLineChartModal(true); } }}
-            className="rounded-full flex items-center justify-center focus:outline-none"
-            style={{ borderRadius: 999, width: 80, height: 80 }}
-          >
-            <LineChart className={`h-7 w-7 transition-transform duration-200 icon ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`} />
+        <OrangeStyleWidget
+          icon={LineChart}
+          label="Line Chart"
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <button 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                setShowLineChartModal(true); 
+              }} 
+              className="px-3 py-1.5 text-xs font-medium rounded transition-colors text-white"
+              style={{ backgroundColor: colors.main }}
+            >
+              Open Chart
+            </button>
           </div>
-
-          <div className="mt-2 text-[12px] font-medium text-center">Line Chart</div>
-        </div>
+        </OrangeStyleWidget>
       );
     }
     if (widget.type === 'scatter-plot') {
+      const colors = getWidgetColors('scatter-plot');
+      
       return (
-        <div className="flex flex-col items-center w-full" onClick={(e) => e.stopPropagation()}>
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => { e.stopPropagation(); setShowScatterModal(true); }}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowScatterModal(true); } }}
-            className="rounded-full flex items-center justify-center focus:outline-none"
-            style={{ borderRadius: 999, width: 80, height: 80 }}
-          >
-            <Scatter3D className={`h-7 w-7 transition-transform duration-200 icon ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`} />
+        <OrangeStyleWidget
+          icon={Scatter3D}
+          label="Scatter Plot"
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <button 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                setShowScatterModal(true); 
+              }} 
+              className="px-3 py-1.5 text-xs font-medium rounded transition-colors text-white"
+              style={{ backgroundColor: colors.main }}
+            >
+              Open Chart
+            </button>
           </div>
-
-          <div className="mt-2 text-[12px] font-medium text-center">Scatter Plot</div>
+        </OrangeStyleWidget>
+      );
+    }
         </div>
       );
     }
     if (widget.type === 'box-plot') {
+      const colors = getWidgetColors('box-plot');
+      
       return (
-        <div className="flex flex-col items-center w-full" onClick={(e) => e.stopPropagation()}>
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => { e.stopPropagation(); setShowBoxPlotModal(true); }}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowBoxPlotModal(true); } }}
-            className="rounded-full flex items-center justify-center focus:outline-none"
-            style={{ borderRadius: 999, width: 80, height: 80 }}
-          >
-            <Box className={`h-7 w-7 transition-transform duration-200 icon ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`} />
+        <OrangeStyleWidget
+          icon={Box}
+          label="Box Plot"
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <button 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                setShowBoxPlotModal(true); 
+              }} 
+              className="px-3 py-1.5 text-xs font-medium rounded transition-colors text-white"
+              style={{ backgroundColor: colors.main }}
+            >
+              Open Chart
+            </button>
           </div>
-
-          <div className="mt-2 text-[12px] font-medium text-center">Box Plot</div>
-        </div>
+        </OrangeStyleWidget>
       );
     }
     if (widget.type === 'bar-chart') {
+      const colors = getWidgetColors('bar-chart');
+      
       return (
-        <div className="flex flex-col items-center w-full" onClick={(e) => e.stopPropagation()}>
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => { e.stopPropagation(); setShowBarChartModal(true); }}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowBarChartModal(true); } }}
-            className="rounded-full flex items-center justify-center focus:outline-none"
-            style={{ borderRadius: 999, width: 80, height: 80 }}
-          >
-            <BarChart3 className={`h-7 w-7 transition-transform duration-200 icon ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`} />
+        <OrangeStyleWidget
+          icon={BarChart3}
+          label="Bar Chart"
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <button 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                setShowBarChartModal(true); 
+              }} 
+              className="px-3 py-1.5 text-xs font-medium rounded transition-colors text-white"
+              style={{ backgroundColor: colors.main }}
+            >
+              Open Chart
+            </button>
           </div>
-
-          <div className="mt-2 text-[12px] font-medium text-center">Bar Chart</div>
-        </div>
+        </OrangeStyleWidget>
       );
     }
     if (widget.type === 'noise-filter') {
@@ -1765,10 +1800,20 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
         setShowLineChartModal(true);
       };
 
+      const colors = getWidgetColors('noise-filter');
+      const hasData = (modalPreviewData && modalPreviewData.length > 0) || widget.data?.tableDataProcessed;
+
       return (
-        <div className="flex flex-col items-center justify-center w-full h-full cursor-default px-2" onClick={(e) => e.stopPropagation()}>
-          {/* Method selector and parameters above the circle */}
-          <div className="w-full px-2 mb-2 space-y-2">
+        <OrangeStyleWidget
+          icon={Filter}
+          label="Noise Filter"
+          statusText={hasData ? 'Data processed' : 'Ready'}
+          statusColor={hasData ? 'green' : 'gray'}
+          mainColor={colors.main}
+          lightColor={colors.light}
+          bgColor={colors.bg}
+        >
+          <div className="w-full px-3 py-2 space-y-2">
             {/* Method Selector */}
             <div className="flex items-center gap-2 text-xs">
               <label className="text-xs font-semibold">Method:</label>
@@ -1835,45 +1880,24 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
             <div className="flex gap-2">
               <button 
                 type="button" 
-                onClick={() => runNoiseFilter()} 
-                className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700"
+                onClick={(e) => { e.stopPropagation(); runNoiseFilter(); }} 
+                className="flex-1 px-3 py-2 rounded text-xs font-semibold text-white"
+                style={{ backgroundColor: colors.main }}
                 title="Apply noise filtering to the data"
               >
                 Apply
               </button>
               <button 
                 type="button" 
-                onClick={() => openNoisePreview()} 
-                className={`flex-1 px-3 py-2 rounded text-xs font-semibold ${
-                  (modalPreviewData && modalPreviewData.length > 0) || widget.data?.tableDataProcessed
-                    ? 'bg-green-600 text-white hover:bg-green-700'
-                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                }`}
-                title={
-                  (modalPreviewData && modalPreviewData.length > 0) || widget.data?.tableDataProcessed
-                    ? 'View the smoothed data'
-                    : 'Click Apply first to process data'
-                }
+                onClick={(e) => { e.stopPropagation(); openNoisePreview(); }} 
+                className="flex-1 px-3 py-2 rounded text-xs font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300"
+                title={hasData ? 'View the smoothed data' : 'Click Apply first to process data'}
               >
-                {(modalPreviewData && modalPreviewData.length > 0) || widget.data?.tableDataProcessed ? '✓ View Data' : 'View Data'}
+                View Data
               </button>
             </div>
           </div>
-
-          {/* Outer connection circle with icon inside */}
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => { e.stopPropagation(); runNoiseFilter(); }}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); runNoiseFilter(); } }}
-            className="rounded-full flex items-center justify-center focus:outline-none"
-            style={{ borderRadius: 999, width: 80, height: 80 }}
-          >
-            <IconComponent className={`h-7 w-7 transition-transform duration-200 icon ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`} />
-          </div>
-
-          <div className="mt-2 text-[12px] font-medium text-center">Noise Filter</div>
-        </div>
+        </OrangeStyleWidget>
       );
     }
       if (widget.type === 'smoothing') {

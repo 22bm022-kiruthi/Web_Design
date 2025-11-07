@@ -11,12 +11,12 @@ export interface WidgetColors {
 }
 
 export const WIDGET_COLORS: Record<string, WidgetColors> = {
-  // DATA SOURCES - Orange
+  // DATA SOURCES - Blue
   'supabase': {
-    main: '#FF9800',
-    light: '#FFE4CC',
-    bg: '#FFF8F0',
-    accent: '#FF9800'
+    main: '#2196F3',
+    light: '#BBDEFB',
+    bg: '#E3F2FD',
+    accent: '#2196F3'
   },
   'file-upload': {
     main: '#FF9800',

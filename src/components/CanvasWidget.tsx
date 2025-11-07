@@ -1432,104 +1432,101 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
       );
     }
     if (widget.type === 'supabase') {
-      // Orange-style Supabase widget: icon in connecting circle, title below, controls at bottom
+      // Orange Data Mining style: Simple icon in circle, clean label below
       const tableData: Record<string, any>[] = widget.data?.tableData || [];
       const hasData = tableData && tableData.length > 0;
 
       return (
         <div
-          className="flex flex-col items-center justify-between w-full h-full cursor-default p-4"
+          className="flex flex-col items-center justify-center w-full h-full cursor-default p-3 bg-white"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Top section with title */}
-          <div className="text-center mb-2">
-            <div className="text-sm font-bold text-gray-800 mb-1">Supabase Source</div>
-            {/* Status indicator */}
-            {widget.data?.fetchStatus === 'fetching' ? (
-              <div className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded-full">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-                Fetching...
-              </div>
-            ) : hasData ? (
-              <div className="inline-flex items-center gap-1 text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
-                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                {tableData.length} rows loaded
-              </div>
-            ) : (
-              <div className="text-xs text-gray-400">No data</div>
-            )}
-          </div>
-
-          {/* Center section with connection circle containing database icon */}
-          <div className="flex-1 flex items-center justify-center my-2">
-            {/* Outer connection circle with dashed border */}
+          {/* Main icon circle - Orange Data Mining style */}
+          <div className="flex flex-col items-center gap-2 mb-3">
+            {/* Outer dashed connection circle */}
             <div 
               className="rounded-full flex items-center justify-center relative"
               style={{
-                border: '3px dashed #FED7AA',
-                width: 100,
-                height: 100,
-                background: 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)'
+                border: '2px dashed #FFE4CC',
+                width: 90,
+                height: 90,
+                background: '#FFF8F0'
               }}
             >
-              {/* Inner circle with database icon */}
+              {/* Inner solid circle with icon */}
               <div 
-                className="rounded-full flex items-center justify-center shadow-lg"
+                className="rounded-full flex items-center justify-center"
                 style={{
-                  width: 70,
-                  height: 70,
-                  background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)'
+                  width: 65,
+                  height: 65,
+                  background: '#FF9800',
+                  boxShadow: '0 2px 8px rgba(255, 152, 0, 0.3)'
                 }}
               >
-                <Database className="h-8 w-8 text-white" strokeWidth={2.5} />
+                <Database className="h-7 w-7 text-white" strokeWidth={2} />
               </div>
               
-              {/* Connection dots on the circle */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <div className="w-3 h-3 bg-orange-400 rounded-full border-2 border-white shadow-sm"></div>
+              {/* Top connection dot */}
+              <div className="absolute -top-1 left-1/2 -translate-x-1/2">
+                <div className="w-2.5 h-2.5 bg-orange-400 rounded-full border-2 border-white"></div>
               </div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                <div className="w-3 h-3 bg-orange-400 rounded-full border-2 border-white shadow-sm"></div>
+              {/* Bottom connection dot */}
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
+                <div className="w-2.5 h-2.5 bg-orange-400 rounded-full border-2 border-white"></div>
               </div>
+            </div>
+            
+            {/* Label below icon - Orange style */}
+            <div className="text-center">
+              <div className="text-xs font-semibold text-gray-800">Datasets</div>
+              {hasData && (
+                <div className="text-[10px] text-gray-500 mt-0.5">{tableData.length} instances</div>
+              )}
+              {!hasData && widget.data?.fetchStatus !== 'fetching' && (
+                <div className="text-[10px] text-gray-400 mt-0.5">No data</div>
+              )}
+              {widget.data?.fetchStatus === 'fetching' && (
+                <div className="text-[10px] text-blue-500 mt-0.5">Loading...</div>
+              )}
             </div>
           </div>
 
-          {/* Bottom section with controls */}
-          <div className="w-full flex flex-col gap-2">
+          {/* Compact controls - hidden until hover for clean look */}
+          <div className="w-full flex flex-col gap-1.5 opacity-0 hover:opacity-100 transition-opacity duration-200">
             {!hasData && (
               <>
                 <input 
-                  className="w-full rounded-lg px-3 py-2 text-sm border-2 border-gray-200 focus:border-orange-400 focus:outline-none text-center bg-white text-gray-800 font-medium placeholder-gray-400 transition-colors" 
+                  className="w-full rounded px-2 py-1.5 text-xs border border-gray-200 focus:border-orange-400 focus:outline-none text-center bg-white text-gray-700 placeholder-gray-400" 
                   value={sbTableName} 
                   onChange={(e) => setSbTableName(e.target.value)} 
-                  placeholder="Table: raman_data" 
+                  placeholder="raman_data" 
                 />
                 <input 
-                  className="w-full rounded-lg px-3 py-2 text-sm border-2 border-gray-200 focus:border-orange-400 focus:outline-none text-center bg-white text-gray-800 placeholder-gray-400 transition-colors" 
+                  className="w-full rounded px-2 py-1.5 text-xs border border-gray-200 focus:border-orange-400 focus:outline-none text-center bg-white text-gray-700 placeholder-gray-400" 
                   value={sbSampleFilter} 
                   onChange={(e) => setSbSampleFilter(e.target.value)} 
-                  placeholder="Sample (optional)" 
+                  placeholder="Sample" 
                 />
                 <button 
-                  className="w-full px-4 py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0" 
+                  className="w-full px-2 py-1.5 rounded bg-orange-500 text-white text-xs font-medium hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors" 
                   onClick={(e) => { e.stopPropagation(); fetchSupabaseData(); }} 
                   disabled={sbFetching || !sbTableName}
                 >
-                  {sbFetching ? '⏳ Loading...' : '📥 Load Data'}
+                  {sbFetching ? 'Loading...' : 'Load'}
                 </button>
               </>
             )}
             
             {hasData && (
               <button 
-                className="w-full px-4 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-bold hover:from-green-600 hover:to-green-700 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0" 
+                className="w-full px-2 py-1.5 rounded bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition-colors" 
                 onClick={(e) => { 
                   e.stopPropagation(); 
                   setModalPreviewData(widget.data?.tableDataProcessed || []); 
                   setShowLineChartModal(true); 
                 }}
               >
-                👁️ View Data
+                Open table
               </button>
             )}
           </div>

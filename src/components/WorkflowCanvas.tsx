@@ -15,6 +15,7 @@ import ReactFlow, {
   ReactFlowInstance,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import '../workflow.css';
 import dagre from 'dagre';
 import WorkflowNode, { WorkflowNodeData } from './WorkflowNode';
 import { Widget, Connection as AppConnection } from '../types';

@@ -5,6 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import React Flow and Workflow styles */
+@import './workflow.css';
+
 :root{
 	--bg: #f5f7fa;
 	--surface: #ffffff;

@@ -186,42 +186,49 @@ const DraggableWidget: React.FC<DraggableWidgetProps> = ({ widgetType }) => {
 
 // Small inline list item for nested lists
 const SmallWidgetItem: React.FC<{ widgetType: WidgetType }> = ({ widgetType }) => {
+  const [iconLoadFailed, setIconLoadFailed] = useState(false);
+  const IconComponent = iconMap[widgetType.icon] || Upload;
   const { theme } = useTheme();
+  
+  // Use useDrag hook at the top level of the component
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'widget',
     item: { type: widgetType.id },
-    collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   }));
 
-  const IconComponent = iconMap[widgetType.icon];
-  const [iconLoadFailed, setIconLoadFailed] = useState(false);
+  // HTML5 drag for React Flow
+  const onDragStart = (event: React.DragEvent) => {
+    event.dataTransfer.setData('application/reactflow', widgetType.id);
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
   return (
     <li
       ref={drag as any}
-      className={`flex flex-col items-center gap-1 px-2 py-2 rounded hover:bg-blue-50 transition ${
+      draggable
+      onDragStart={onDragStart}
+      className={`flex flex-col items-center gap-1 px-2 py-2 rounded hover:bg-blue-50 transition cursor-grab ${
         isDragging ? 'opacity-50' : ''
       }`}
       role="option"
       aria-label={widgetType.name}
     >
-  <div className={`w-14 h-14 rounded flex items-center justify-center ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+      <div className={`w-14 h-14 rounded flex items-center justify-center ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="icon-outer">
-            {!iconLoadFailed ? (
+          {!iconLoadFailed ? (
             <img src={`/${widgetType.id}.svg`} alt={widgetType.name} className="h-5 w-5 icon" onError={() => setIconLoadFailed(true)} />
           ) : (
             <IconComponent className={`h-5 w-5 icon`} />
           )}
         </div>
       </div>
-  <span className={`text-xs mt-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{widgetType.name}</span>
+      <span className={`text-xs mt-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{widgetType.name}</span>
     </li>
   );
 };
-
-interface SidebarProps {
-  onAddWidget: (type: string, position: { x: number; y: number }) => void;
-}
 
 const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
   const { theme } = useTheme();

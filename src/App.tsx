@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { ReactFlowProvider } from 'reactflow';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import Header from './components/Header';
 import FilesModal from './components/FilesModal';
 import Sidebar from './components/Sidebar';
 import Canvas from './components/Canvas';
+import WorkflowCanvas from './components/WorkflowCanvas';
 import ConfigModal from './components/ConfigModal';
 import TopMenuBar from './components/TopMenuBar';
 import { Widget, Connection, Theme } from './types';
@@ -417,37 +419,40 @@ const App: React.FC = () => {
   }
   return (
     <ThemeProvider theme={theme} toggleTheme={toggleTheme}>
-      <DndProvider backend={HTML5Backend}>
-        <ErrorBoundary>
-          <div className="flex flex-col h-screen">
-            <Header onToggleTheme={toggleTheme} theme={theme} onOpenFiles={() => setFilesModalOpen(true)} />
-            <TopMenuBar />
-            <div className="flex flex-1">
-              <Sidebar onAddWidget={onAddWidget} />
-              <Canvas
-                widgets={widgets}
-                connections={connections}
-                onUpdateWidget={onUpdateWidget}
-                onDeleteWidget={onDeleteWidget}
-                onOpenConfig={onOpenConfig}
-                onAddConnection={addConnection}
-                onAddWidget={onAddWidget}
-                onRemoveConnections={onRemoveConnections}
-              />
+      <ReactFlowProvider>
+        <DndProvider backend={HTML5Backend}>
+          <ErrorBoundary>
+            <div className="flex flex-col h-screen">
+              <Header onToggleTheme={toggleTheme} theme={theme} onOpenFiles={() => setFilesModalOpen(true)} />
+              <TopMenuBar />
+              <div className="flex flex-1">
+                <Sidebar onAddWidget={onAddWidget} />
+                <WorkflowCanvas
+                  widgets={widgets}
+                  connections={connections}
+                  onUpdateWidget={onUpdateWidget}
+                  onDeleteWidget={onDeleteWidget}
+                  onAddConnection={addConnection}
+                  onAddWidget={onAddWidget}
+                  onRemoveConnection={(fromId, toId) => {
+                    setConnections((prev) => prev.filter((c) => !(c.fromId === fromId && c.toId === toId)));
+                  }}
+                />
+              </div>
+              {selectedWidget && (
+                <ConfigModal
+                  isOpen={!!selectedWidget}
+                  widget={selectedWidget}
+                  onClose={() => setSelectedWidget(null)}
+                  onUpdate={onUpdateWidget}
+                  theme={theme}
+                />
+              )}
+              <FilesModal isOpen={filesModalOpen} onClose={() => setFilesModalOpen(false)} onUseFile={(f) => handleUseFile(f)} />
             </div>
-            {selectedWidget && (
-              <ConfigModal
-                isOpen={!!selectedWidget}
-                widget={selectedWidget}
-                onClose={() => setSelectedWidget(null)}
-                onUpdate={onUpdateWidget}
-                theme={theme}
-              />
-            )}
-            <FilesModal isOpen={filesModalOpen} onClose={() => setFilesModalOpen(false)} onUseFile={(f) => handleUseFile(f)} />
-          </div>
-        </ErrorBoundary>
-      </DndProvider>
+          </ErrorBoundary>
+        </DndProvider>
+      </ReactFlowProvider>
     </ThemeProvider>
   );
 };

@@ -201,6 +201,7 @@ const SmallWidgetItem: React.FC<{ widgetType: WidgetType }> = ({ widgetType }) =
 
   // HTML5 drag for React Flow
   const onDragStart = (event: React.DragEvent) => {
+    console.log('[Sidebar] Drag started for widget:', widgetType.id);
     event.dataTransfer.setData('application/reactflow', widgetType.id);
     event.dataTransfer.effectAllowed = 'move';
   };

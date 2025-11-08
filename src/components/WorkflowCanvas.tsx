@@ -89,8 +89,11 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
+      event.stopPropagation();
 
       const type = event.dataTransfer.getData('application/reactflow');
+      
+      console.log('[WorkflowCanvas] Drop event fired!', { type, clientX: event.clientX, clientY: event.clientY });
       
       if (!type) {
         console.log('[WorkflowCanvas] No widget type in drag data');
@@ -104,32 +107,43 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
 
       // Calculate position relative to React Flow viewport
       let position;
-      if (reactFlowInstance) {
-        position = reactFlowInstance.screenToFlowPosition({
+      const flowInstance = rfInstance || reactFlowInstance;
+      
+      if (flowInstance && flowInstance.screenToFlowPosition) {
+        position = flowInstance.screenToFlowPosition({
           x: event.clientX,
           y: event.clientY,
         });
-      } else if (reactFlowBounds) {
+        console.log('[WorkflowCanvas] Using React Flow position:', position);
+      } else if (reactFlowWrapper.current) {
+        const bounds = reactFlowWrapper.current.getBoundingClientRect();
         position = {
-          x: event.clientX - reactFlowBounds.left,
-          y: event.clientY - reactFlowBounds.top,
+          x: event.clientX - bounds.left,
+          y: event.clientY - bounds.top,
         };
+        console.log('[WorkflowCanvas] Using wrapper bounds position:', position);
       } else {
         position = {
-          x: event.clientX,
-          y: event.clientY,
+          x: event.clientX - 100,
+          y: event.clientY - 100,
         };
+        console.log('[WorkflowCanvas] Using fallback position:', position);
       }
 
       console.log('[WorkflowCanvas] Dropping widget:', type, 'at position:', position);
       onAddWidget(type, position);
     },
-    [reactFlowInstance, reactFlowBounds, onAddWidget]
+    [rfInstance, reactFlowInstance, onAddWidget]
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
+    event.stopPropagation();
     event.dataTransfer.dropEffect = 'move';
+    // Only log occasionally to avoid spam
+    if (Math.random() < 0.01) {
+      console.log('[WorkflowCanvas] Drag over canvas');
+    }
   }, []);
 
   // Convert widgets to React Flow nodes
@@ -165,6 +179,9 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Store React Flow instance when initialized
+  const [rfInstance, setRfInstance] = React.useState<any>(null);
 
   // Update nodes when widgets change
   React.useEffect(() => {
@@ -258,6 +275,7 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
         onNodeDragStop={onNodeDragStop}
         onNodesDelete={onNodesDelete}
         onEdgesDelete={onEdgesDelete}
+        onInit={setRfInstance}
         nodeTypes={nodeTypes}
         fitView
         snapToGrid
@@ -270,6 +288,7 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
         connectionLineStyle={{ stroke: '#64B5F6', strokeWidth: 2 }}
         minZoom={0.25}
         maxZoom={2}
+        deleteKeyCode={['Backspace', 'Delete']}
       >
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#e0e0e0" />
         

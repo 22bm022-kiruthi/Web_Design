@@ -58,6 +58,43 @@ const App: React.FC = () => {
   const [widgets, setWidgets] = useState<Widget[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selectedWidget, setSelectedWidget] = useState<Widget | null>(null);
+
+  // Add test widgets on first load to verify display
+  React.useEffect(() => {
+    if (widgets.length === 0) {
+      console.log('[App] Adding test widgets');
+      setWidgets([
+        {
+          id: 'test-file-upload',
+          type: 'file-upload',
+          position: { x: 100, y: 100 },
+          data: {},
+          label: 'File Upload'
+        },
+        {
+          id: 'test-supabase',
+          type: 'supabase',
+          position: { x: 100, y: 250 },
+          data: {},
+          label: 'Supabase'
+        },
+        {
+          id: 'test-noise-filter',
+          type: 'noise-filter',
+          position: { x: 300, y: 100 },
+          data: {},
+          label: 'Noise Filter'
+        },
+        {
+          id: 'test-line-chart',
+          type: 'line-chart',
+          position: { x: 500, y: 100 },
+          data: {},
+          label: 'Line Chart'
+        }
+      ]);
+    }
+  }, []);
   // allow other components to open the Files modal for a specific widget by dispatching
   // window.dispatchEvent(new CustomEvent('openFilesModal', { detail: { widgetId } }))
   React.useEffect(() => {

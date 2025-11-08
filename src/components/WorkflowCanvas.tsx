@@ -78,19 +78,30 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [autoLayout, setAutoLayout] = useState(false);
 
+  // Debug: Log widgets on mount and when they change
+  React.useEffect(() => {
+    console.log('[WorkflowCanvas] Widgets updated:', widgets.length, widgets);
+  }, [widgets]);
+
   // Handle drop from sidebar
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
 
       const type = event.dataTransfer.getData('application/reactflow');
-      if (!type || !reactFlowInstance || !onAddWidget) return;
+      console.log('[WorkflowCanvas] Drop detected, type:', type);
+      
+      if (!type || !reactFlowInstance || !onAddWidget) {
+        console.log('[WorkflowCanvas] Drop failed:', { type, hasReactFlow: !!reactFlowInstance, hasOnAddWidget: !!onAddWidget });
+        return;
+      }
 
       const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
 
+      console.log('[WorkflowCanvas] Adding widget at position:', position);
       onAddWidget(type, position);
     },
     [reactFlowInstance, onAddWidget]
@@ -103,8 +114,8 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
 
   // Convert widgets to React Flow nodes
   const initialNodes: Node<WorkflowNodeData>[] = useMemo(
-    () =>
-      widgets.map((widget) => ({
+    () => {
+      const nodes = widgets.map((widget) => ({
         id: widget.id,
         type: 'workflow',
         position: widget.position,
@@ -114,7 +125,10 @@ const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
           status: widget.data?.fetchStatus === 'success' || widget.data?.tableDataProcessed ? 'success' : 'idle',
           hasData: !!(widget.data?.tableData || widget.data?.parsedData),
         },
-      })),
+      }));
+      console.log('[WorkflowCanvas] Initial nodes created:', nodes.length, nodes);
+      return nodes;
+    },
     [widgets]
   );
 

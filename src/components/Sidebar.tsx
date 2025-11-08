@@ -230,6 +230,10 @@ const SmallWidgetItem: React.FC<{ widgetType: WidgetType }> = ({ widgetType }) =
   );
 };
 
+interface SidebarProps {
+  onAddWidget: (type: string, position: { x: number; y: number }) => void;
+}
+
 const Sidebar: React.FC<SidebarProps> = ({ onAddWidget }) => {
   const { theme } = useTheme();
   // ensure onAddWidget is referenced to avoid unused var linting

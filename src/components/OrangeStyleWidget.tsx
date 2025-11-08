@@ -42,44 +42,26 @@ const OrangeStyleWidget: React.FC<OrangeStyleWidgetProps> = ({
       className="flex flex-col items-center justify-center w-full h-full cursor-default p-3 bg-white"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Main icon circle - Orange Data Mining style */}
-      <div className="flex flex-col items-center gap-2 mb-3">
-        {/* Outer circle without connection ports */}
+      {/* Main icon circle - Orange Data Mining style (clean, no dashed border) */}
+      <div className="flex flex-col items-center gap-2 mb-2">
+        {/* Single solid circle with icon - cleaner Orange style */}
         <div 
-          className="rounded-full flex items-center justify-center relative"
+          className="rounded-full flex items-center justify-center"
           style={{
-            width: 90,
-            height: 90,
-            background: bgColor
+            width: 56,
+            height: 56,
+            background: mainColor,
+            boxShadow: `0 2px 6px ${mainColor}30`
           }}
         >
-          {/* Dashed border circle */}
-          <div 
-            className="absolute inset-0 rounded-full"
-            style={{
-              border: `2px dashed ${lightColor}`
-            }}
-          ></div>
-          
-          {/* Inner solid circle with icon */}
-          <div 
-            className="rounded-full flex items-center justify-center relative z-10"
-            style={{
-              width: 65,
-              height: 65,
-              background: mainColor,
-              boxShadow: `0 2px 8px ${mainColor}40`
-            }}
-          >
-            <Icon className="h-7 w-7 text-white" strokeWidth={2} />
-          </div>
+          <Icon className="h-5 w-5 text-white" strokeWidth={2.5} />
         </div>
         
         {/* Label below icon - Orange style */}
         <div className="text-center">
-          <div className="text-xs font-semibold text-gray-800">{label}</div>
+          <div className="text-[11px] font-semibold text-gray-800">{label}</div>
           {statusText && (
-            <div className={`text-[10px] mt-0.5 ${statusColors[statusColor]}`}>
+            <div className={`text-[9px] mt-0.5 ${statusColors[statusColor]}`}>
               {statusText}
             </div>
           )}

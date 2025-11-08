@@ -1616,9 +1616,6 @@ const CanvasWidget: React.FC<CanvasWidgetProps> = ({
         </OrangeStyleWidget>
       );
     }
-        </div>
-      );
-    }
     if (widget.type === 'box-plot') {
       const colors = getWidgetColors('box-plot');
       
